@@ -25,6 +25,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+});
 
 builder.Services.AddScoped<IViewRenderService, ViewRenderService>();
 builder.Services.AddTransient<IAppEmailSender, EmailService>();
@@ -89,3 +94,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+
+//install - package Microsoft.Owin.Host.SystemWeb –Pre
+//dotnet add package Microsoft.AspNetCore.Authentication.Google

@@ -9,7 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth.AspNetCore3" Version="1.77.0" />
     <PackageReference Include="MailKit" Version="4.18.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.12" />
@@ -19,6 +21,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Owin.Host.SystemWeb" Version="4.2.3" />
   </ItemGroup>
 
   <ItemGroup>
