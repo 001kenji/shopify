@@ -1,0 +1,441 @@
+﻿@{
+    ViewData["Title"] = "Terms & Conditions";
+    var effectiveDate = "10 October 2026";
+    var lastUpdated = "10 October 2026";
+}
+
+<div class="max-w-4xl mx-auto">
+
+    <!-- Page header -->
+    <div class="mb-10">
+        <h1 class="text-3xl font-bold text-gray-900">Terms &amp; Conditions</h1>
+        <p class="mt-2 text-sm text-gray-600">
+            Please read these terms carefully before using Shop Management System.
+        </p>
+
+        <dl class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div class="rounded-md border border-golden-100 bg-golden-50/50 px-4 py-3">
+                <dt class="text-xs font-semibold uppercase tracking-wider text-golden-700">Effective Date</dt>
+                <dd class="mt-1 font-medium text-gray-900">@effectiveDate</dd>
+            </div>
+            <div class="rounded-md border border-golden-100 bg-golden-50/50 px-4 py-3">
+                <dt class="text-xs font-semibold uppercase tracking-wider text-golden-700">Last Updated</dt>
+                <dd class="mt-1 font-medium text-gray-900">@lastUpdated</dd>
+            </div>
+        </dl>
+    </div>
+
+    <!-- Table of contents -->
+    <nav class="card p-6 mb-10">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-4">
+            On this page
+        </h2>
+        <ol class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+            <li><a href="#acceptance" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">1. Acceptance of These Terms</a></li>
+            <li><a href="#eligibility" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">2. Eligibility</a></li>
+            <li><a href="#service" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">3. Description of the Service</a></li>
+            <li><a href="#account" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">4. Accounts &amp; Security</a></li>
+            <li><a href="#booking" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">5. Bookings &amp; Pickup</a></li>
+            <li><a href="#delivery" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">6. Delivery Requests</a></li>
+            <li><a href="#prohibited" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">7. Prohibited Uses</a></li>
+            <li><a href="#privacy" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">8. Privacy &amp; Data</a></li>
+            <li><a href="#responsibilities" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">9. Your Responsibilities</a></li>
+            <li><a href="#third-party" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">10. Third-Party Services</a></li>
+            <li><a href="#payments" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">11. Payments</a></li>
+            <li><a href="#ip" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">12. Intellectual Property</a></li>
+            <li><a href="#warranty" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">13. No Warranty</a></li>
+            <li><a href="#liability" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">14. Limitation of Liability</a></li>
+            <li><a href="#indemnification" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">15. Indemnification</a></li>
+            <li><a href="#termination" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">16. Suspension &amp; Termination</a></li>
+            <li><a href="#law" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">17. Governing Law</a></li>
+            <li><a href="#disputes" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">18. Dispute Resolution</a></li>
+            <li><a href="#changes" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">19. Changes to These Terms</a></li>
+            <li><a href="#contact" class="text-golden-700 hover:text-golden-800 hover:underline underline-offset-2">20. Contact</a></li>
+        </ol>
+    </nav>
+
+    <!-- Intro banner -->
+    <div class="alert-info mb-10">
+        <svg class="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div>
+            <p class="font-medium">A quick summary</p>
+            <p class="mt-1">
+                Shop Management System lets you browse products, book items for pickup,
+                and request deliveries. You're responsible for the accuracy of your
+                account and order details, for using the platform lawfully, and for
+                reviewing these terms before submitting a booking or delivery request.
+            </p>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <article class="space-y-10 text-sm text-gray-700 leading-relaxed">
+
+        <!-- 1 -->
+        <section id="acceptance">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">1. Acceptance of These Terms</h2>
+            <p>
+                These Terms &amp; Conditions ("Terms") govern your access to and use of
+                Shop Management System ("the Service", "we", "us", or "our"). By accessing,
+                registering for, or using the Service, you agree to these Terms and our
+                <a asp-action="Privacy" class="link-golden">Privacy Policy</a>. If you do not agree,
+                do not use the Service.
+            </p>
+            <p class="mt-3">
+                You are responsible for reading these Terms before using features that
+                create, store, or submit orders, bookings, deliveries, or account information.
+            </p>
+        </section>
+
+        <!-- 2 -->
+        <section id="eligibility">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">2. Eligibility</h2>
+            <p>
+                You must be at least 18 years old to create an account and place orders
+                through the Service. By using the Service, you confirm that you meet this
+                requirement and that you will comply with all applicable laws and
+                third-party terms.
+            </p>
+        </section>
+
+        <!-- 3 -->
+        <section id="service">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">3. Description of the Service</h2>
+            <p>
+                Shop Management System is a web platform that allows customers to browse
+                available inventory, book items for in-store pickup, and submit delivery
+                requests for eligible products. Depending on the item and its stock level,
+                certain actions — such as booking or requesting delivery — may or may not
+                be available.
+            </p>
+            <p class="mt-3">
+                The Service does not own or operate the underlying shop, delivery fleet,
+                or payment infrastructure. It coordinates orders between customers and the
+                shop. Features may change, be suspended, or be discontinued at any time,
+                subject to applicable law.
+            </p>
+        </section>
+
+        <!-- 4 -->
+        <section id="account">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">4. Accounts &amp; Security</h2>
+            <p>
+                You are responsible for maintaining the confidentiality of your account
+                credentials and for all activity that occurs under your account. You agree
+                to provide accurate, current, and complete information during registration
+                and to update it as needed.
+            </p>
+            <p class="mt-3">
+                Notify us immediately if you suspect unauthorized access to your account.
+                We are not responsible for losses arising from your failure to keep your
+                credentials secure.
+            </p>
+        </section>
+
+        <!-- 5 -->
+        <section id="booking">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">5. Bookings &amp; Pickup</h2>
+            <p>
+                A booking is a reservation of a specific quantity of an item for pickup at
+                the shop. Submitting a booking does not complete a purchase; final payment
+                and collection are handled at the time of pickup, unless otherwise indicated.
+            </p>
+            <ul class="mt-3 space-y-2 pl-5 list-disc marker:text-golden-500">
+                <li>Bookings are subject to availability. If stock runs out, we may cancel or adjust your booking.</li>
+                <li>You are responsible for arriving within the pickup window you selected.</li>
+                <li>Bookings that are not collected may be released back into available stock.</li>
+                <li>You can cancel a booking through your account while it is still in <strong>Pending</strong> or <strong>Confirmed</strong> status.</li>
+            </ul>
+        </section>
+
+        <!-- 6 -->
+        <section id="delivery">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">6. Delivery Requests</h2>
+            <p>
+                Delivery is available only on items marked as deliverable and only within
+                the delivery radius indicated on the product page. Submitting a delivery
+                request does not guarantee acceptance — a shop admin must confirm the
+                request before it is dispatched.
+            </p>
+            <ul class="mt-3 space-y-2 pl-5 list-disc marker:text-golden-500">
+                <li>You must provide an accurate delivery location, building, and unit number.</li>
+                <li>Delivery fees, if any, are shown before you confirm the request.</li>
+                <li>You may edit or cancel a delivery request while it remains in <strong>Pending</strong> status.</li>
+                <li>Once a delivery is <strong>Out for delivery</strong>, changes may no longer be possible.</li>
+                <li>You are responsible for ensuring someone is available to receive the delivery at the specified time.</li>
+            </ul>
+        </section>
+
+        <!-- 7 -->
+        <section id="prohibited">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">7. Prohibited Uses</h2>
+            <p>You must not use the Service to:</p>
+            <ul class="mt-3 space-y-2 pl-5 list-disc marker:text-golden-500">
+                <li>Submit false, fraudulent, or misleading orders or delivery information.</li>
+                <li>Impersonate another person, business, or entity.</li>
+                <li>Harass, threaten, or abuse shop staff, delivery personnel, or other users.</li>
+                <li>Interfere with, disrupt, or attempt to gain unauthorized access to the Service or its underlying systems.</li>
+                <li>Scrape, copy, or resell data or content from the Service without permission.</li>
+                <li>Use the Service in any way that violates applicable law or third-party rights.</li>
+            </ul>
+        </section>
+
+        <!-- 8 -->
+        <section id="privacy">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">8. Privacy &amp; Data</h2>
+            <p>
+                We collect and process personal information such as your name, email,
+                username, order history, and delivery details in order to operate the
+                Service. Account management tools allow you to review, download, or delete
+                your personal data through your account settings.
+            </p>
+            <p class="mt-3">
+                Some information — such as booking and delivery history — is retained so
+                that both you and the shop can track orders and resolve disputes. You may
+                request deletion of your account and associated data at any time; certain
+                records may be retained where required by law or for legitimate business
+                purposes.
+            </p>
+            <p class="mt-3">
+                For full details on what we collect and how it is used, please refer to
+                our <a asp-action="Privacy" class="link-golden">Privacy Policy</a>.
+            </p>
+        </section>
+
+        <!-- 9 -->
+        <section id="responsibilities">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">9. Your Responsibilities</h2>
+            <p>
+                You are responsible for your use of the Service, including the accuracy of
+                the information you provide, the products and quantities you order, and the
+                delivery locations you specify. You must ensure that your use complies with
+                applicable law, third-party platform rules, and the rights of other people.
+            </p>
+        </section>
+
+        <!-- 10 -->
+        <section id="third-party">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">10. Third-Party Services</h2>
+            <p>
+                The Service may depend on third-party services such as payment providers,
+                hosting infrastructure, or mapping/location services. Those services have
+                their own separate terms, privacy policies, availability limitations, fees,
+                and security practices.
+            </p>
+            <p class="mt-3">
+                We are not responsible for the independent actions, availability, security,
+                content, policies, or processing practices of these third-party services,
+                except to the extent liability cannot lawfully be excluded.
+            </p>
+        </section>
+
+        <!-- 11 -->
+        <section id="payments">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">11. Payments</h2>
+            <p>
+                Where payments are supported, they are processed by a third-party payment
+                provider. We do not receive or store your full payment-card credentials.
+                Refunds, reversals, failed transactions, unauthorized transactions,
+                duplicate charges, and disputes are handled in accordance with applicable
+                law and the payment provider's rules.
+            </p>
+            <p class="mt-3">
+                If you believe a transaction was unauthorized or incorrect, contact us using
+                the details in Section 20 and, separately, contact your payment provider.
+            </p>
+        </section>
+
+        <!-- 12 -->
+        <section id="ip">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">12. Intellectual Property</h2>
+            <p>
+                The Service, including its software, interface, branding, and documentation,
+                is owned by or licensed to the operator of Shop Management System and is
+                protected by applicable intellectual-property laws.
+            </p>
+            <p class="mt-3">
+                Except as expressly permitted by law, you may not copy, modify, distribute,
+                sell, reverse engineer, or create derivative works from the Service. You
+                retain ownership of content you submit, subject to the rights necessary for
+                us to process that content in order to provide the Service.
+            </p>
+        </section>
+
+        <!-- 13 -->
+        <section id="warranty">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">13. No Warranty</h2>
+            <p class="uppercase text-xs tracking-wide text-gray-600">
+                To the maximum extent permitted by law, the service is provided "as is" and
+                "as available" without warranties of any kind, express or implied, including
+                warranties of merchantability, fitness for a particular purpose,
+                non-infringement, availability, accuracy, reliability, or security.
+            </p>
+            <p class="mt-3">
+                We do not warrant that the Service will always work, remain available, be
+                error-free, produce a particular result, or be compatible with every device
+                or browser.
+            </p>
+        </section>
+
+        <!-- 14 -->
+        <section id="liability">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">14. Limitation of Liability</h2>
+            <p class="uppercase text-xs tracking-wide text-gray-600">
+                To the maximum extent permitted by applicable law, the operator of Shop
+                Management System shall not be liable for indirect, incidental, special,
+                consequential, exemplary, or punitive damages, or for loss of data,
+                goodwill, profits, revenue, business opportunity, or communications arising
+                from or related to your use of or inability to use the Service.
+            </p>
+            <p class="mt-3 uppercase text-xs tracking-wide text-gray-600">
+                To the maximum extent permitted by law, the operator's total aggregate
+                liability arising out of or relating to the Service shall not exceed the
+                greater of (a) the amount you have paid to us through the Service in the
+                12 months before the event giving rise to the claim, or (b) KES 1,000.
+            </p>
+            <p class="mt-3">
+                Nothing in these Terms excludes or limits liability that cannot legally be
+                excluded or limited.
+            </p>
+        </section>
+
+        <!-- 15 -->
+        <section id="indemnification">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">15. Indemnification</h2>
+            <p>
+                To the maximum extent permitted by law, you agree to defend, indemnify, and
+                hold harmless the operator of Shop Management System from claims,
+                liabilities, losses, damages, costs, and reasonable legal expenses arising
+                from your unlawful or unauthorized use of the Service, your violation of
+                another person's rights, your breach of these Terms, or your violation of
+                applicable law.
+            </p>
+            <p class="mt-3">
+                This provision does not require you to indemnify us for losses caused solely
+                by our own conduct to the extent prohibited by applicable law.
+            </p>
+        </section>
+
+        <!-- 16 -->
+        <section id="termination">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">16. Suspension &amp; Termination</h2>
+            <p>
+                We may suspend or terminate access to the Service where reasonably necessary
+                to prevent misuse, address security or legal risks, comply with law, comply
+                with platform requirements, or enforce these Terms.
+            </p>
+            <p class="mt-3">
+                You may stop using the Service at any time and may delete your account through
+                your account settings. Information associated with your account may be
+                retained as described in Section 8.
+            </p>
+        </section>
+
+        <!-- 17 -->
+        <section id="law">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">17. Governing Law</h2>
+            <p>
+                These Terms and any dispute arising from or relating to the Service shall be
+                governed by the laws of the Republic of Kenya, without regard to
+                conflict-of-law principles, except where mandatory consumer, privacy, or
+                other laws applicable to you in your own country require otherwise.
+            </p>
+        </section>
+
+        <!-- 18 -->
+        <section id="disputes">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">18. Dispute Resolution</h2>
+            <p>
+                Before filing a formal claim, you agree to contact us at
+                <a href="mailto:briannjuguna694@gmal.com" class="link-golden">briannjuguna694@gmal.com</a>
+                and provide a reasonable opportunity to investigate and resolve the dispute.
+            </p>
+            <p class="mt-3">
+                Any unresolved dispute shall be resolved exclusively by the courts located in
+                Nairobi, Kenya. Claims may be brought only on an individual basis and not as
+                part of a class, collective, consolidated, or representative action, to the
+                extent permitted by applicable law.
+            </p>
+        </section>
+
+        <!-- 19 -->
+        <section id="changes">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">19. Changes to These Terms</h2>
+            <p>
+                We may update these Terms from time to time. We will post the updated version
+                and change the "Last Updated" date, and material changes will be communicated
+                before they take effect.
+            </p>
+            <p class="mt-3">
+                If any provision of these Terms is found to be unlawful, invalid, or
+                unenforceable, that provision shall be enforced to the maximum extent
+                permitted and the remaining provisions shall remain in effect. These Terms
+                and the Privacy Policy constitute the agreement between you and the operator
+                of Shop Management System concerning the Service.
+            </p>
+        </section>
+
+        <!-- 20 -->
+        <section id="contact">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">20. Contact</h2>
+            <div class="card p-6 mt-4">
+                <dl class="space-y-3 text-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                        <dt class="w-32 shrink-0 text-gray-500">Operator</dt>
+                        <dd class="font-medium text-gray-900">Shop Management System</dd>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                        <dt class="w-32 shrink-0 text-gray-500">Location</dt>
+                        <dd class="font-medium text-gray-900">Nairobi, Kenya</dd>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                        <dt class="w-32 shrink-0 text-gray-500">Email</dt>
+                        <dd class="font-medium">
+                            <a href="mailto:briannjuguna694@gmal.com" class="link-golden">briannjuguna694@gmal.com</a>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
+
+        <!-- Important notice -->
+        <section class="pt-6 border-t border-golden-100">
+            <div class="alert-warning">
+                <svg class="h-5 w-5 shrink-0 text-golden-600 mt-0.5" fill="none"
+                     stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 9v3m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+                </svg>
+                <div>
+                    <p class="font-medium">Important notice</p>
+                    <p class="mt-1">
+                        Shop Management System is a software tool for browsing, booking, and
+                        requesting deliveries. It is not a legal, professional, financial, or
+                        advisory service. You remain responsible for deciding whether to place
+                        or complete any order and for ensuring your use of the Service is
+                        lawful and appropriate.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </article>
+
+    <!-- Footer actions -->
+    <div class="mt-12 pt-8 border-t border-golden-100 flex flex-wrap items-center gap-3">
+        <a asp-controller="Home" asp-action="Index" class="btn-secondary">Back to home</a>
+        <a asp-controller="Shop" asp-action="Index" class="btn-primary w-auto px-6">Go to shop</a>
+    </div>
+
+</div>
+
+<style>
+    /* Smooth scroll for anchor links */
+    html { scroll-behavior: smooth; }
+
+    /* Offset anchors so the section title isn't hidden behind nothing (no sticky nav) */
+    section[id] { scroll-margin-top: 2rem; }
+</style>

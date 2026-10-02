@@ -1,0 +1,103 @@
+@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="max-w-5xl mx-auto py-12">
+    <div class="grid md:grid-cols-2 gap-10">
+
+        <!-- Local register -->
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">@ViewData["Title"]</h1>
+            <h2 class="mt-2 text-sm text-gray-600">Create a new account.</h2>
+            <hr class="my-6 border-golden-100" />
+
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="space-y-5">
+                <div asp-validation-summary="ModelOnly" class="text-sm text-red-600" role="alert"></div>
+
+                <div>
+                    <label asp-for="Input.UserName" class="form-label">User Name</label>
+                    <input asp-for="Input.UserName" class="form-input" autocomplete="username"
+                           aria-required="true" placeholder="Joe" />
+                    <span asp-validation-for="Input.UserName" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Input.Email" class="form-label">Email</label>
+                    <input asp-for="Input.Email" class="form-input" autocomplete="username"
+                           aria-required="true" placeholder="name@example.com" />
+                    <span asp-validation-for="Input.Email" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Input.Password" class="form-label">Password</label>
+                    <input asp-for="Input.Password" class="form-input" autocomplete="new-password"
+                           aria-required="true" placeholder="••••••••" />
+                    <span asp-validation-for="Input.Password" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
+                    <input asp-for="Input.ConfirmPassword" class="form-input" autocomplete="new-password"
+                           aria-required="true" placeholder="••••••••" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <button id="registerSubmit" type="submit" class="btn-primary">Register</button>
+
+                <!-- Terms agreement -->
+                <p class="text-xs text-gray-500 text-center leading-relaxed">
+                    By creating an account, you agree to our
+                    <a asp-controller="Home" asp-action="Privacy"
+                       class="link-golden">Terms &amp; Conditions</a>
+                    and confirm that you have read our
+                    <a asp-controller="Home" asp-action="Privacy"
+                       class="link-golden">Privacy Policy</a>.
+                </p>
+            </form>
+        </div>
+
+        <!-- External register -->
+        <div class="md:border-l md:border-golden-100 md:pl-10">
+            <h3 class="text-lg font-semibold text-gray-900">Use another service to register.</h3>
+            <hr class="my-6 border-golden-100" />
+
+            @if ((Model.ExternalLogins?.Count ?? 0) == 0)
+            {
+                <p class="text-sm text-gray-600">
+                    There are no external authentication services configured. See this
+                    <a href="https://go.microsoft.com/fwlink/?LinkID=532715" class="link-golden">article</a>
+                    about setting up this ASP.NET application to support logging in via external services.
+                </p>
+            }
+            else
+            {
+                <form id="external-account" asp-page="./ExternalLogin"
+                      asp-route-returnUrl="@Model.ReturnUrl" method="post" class="space-y-3">
+                    @foreach (var provider in Model.ExternalLogins!)
+                    {
+                        <button type="submit"
+                                class="w-full px-4 py-2.5 rounded-md text-sm font-medium
+                                       text-golden-700 bg-golden-50 border border-golden-200
+                                       hover:bg-golden-100 focus:outline-none focus:ring-2 focus:ring-golden-400
+                                       transition-colors"
+                                name="provider" value="@provider.Name"
+                                title="Register using your @provider.DisplayName account">
+                            Continue with @provider.DisplayName
+                        </button>
+                    }
+                </form>
+
+                <p class="mt-4 text-xs text-gray-500 leading-relaxed">
+                    By continuing with a third-party provider, you also agree to our
+                    <a asp-controller="Home" asp-action="Privacy" class="link-golden">Terms &amp; Conditions</a>.
+                </p>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,127 @@
+@model Shop_Management_System.Models.Delivery
+@using Shop_Management_System.Models
+@{
+    ViewData["Title"] = $"Delivery #{Model.Id:D6}";
+    var (chipClass, dotClass) = DeliveryStatusStyle(Model.Status);
+}
+
+
+
+@functions {
+    (string chipClass, string dotClass) DeliveryStatusStyle(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.Pending        => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        DeliveryStatus.Confirmed      => ("bg-green-50 border-green-200 text-green-700",   "bg-green-500"),
+        DeliveryStatus.OutForDelivery => ("bg-blue-50 border-blue-200 text-blue-700",      "bg-blue-500"),
+        DeliveryStatus.Delivered      => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+        DeliveryStatus.Cancelled      => ("bg-red-50 border-red-200 text-red-700",         "bg-red-500"),
+        _                             => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+    };
+
+    string DeliveryRowAccent(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.Pending        => "border-l-4 border-l-yellow-400",
+        DeliveryStatus.Confirmed      => "border-l-4 border-l-green-400",
+        DeliveryStatus.OutForDelivery => "border-l-4 border-l-blue-400",
+        DeliveryStatus.Delivered      => "border-l-4 border-l-gray-300",
+        DeliveryStatus.Cancelled      => "border-l-4 border-l-red-400",
+        _                             => "border-l-4 border-l-gray-300",
+    };
+}
+
+<div class="max-w-3xl mx-auto">
+
+    <nav class="text-sm text-gray-500 mb-6">
+        <a asp-action="MyDeliveries" class="hover:text-golden-600 transition-colors">My deliveries</a>
+        <span class="mx-1">/</span>
+        <span class="text-gray-700">#@Model.Id.ToString("D6")</span>
+    </nav>
+
+    <div class="card p-6 sm:p-8">
+
+        <div class="flex items-start justify-between gap-4 mb-6">
+            <div>
+                <h1 class="text-xl font-bold text-gray-900">Delivery #@Model.Id.ToString("D6")</h1>
+                <p class="mt-1 text-sm text-gray-600">
+                    Requested @Model.DateRequested.ToString("dd MMM yyyy, HH:mm")
+                </p>
+            </div>
+            <span class="inline-flex items-center gap-1.5 rounded-full border @chipClass
+                         px-3 py-0.5 text-xs font-medium whitespace-nowrap">
+                <span class="h-1.5 w-1.5 rounded-full @dotClass"></span>
+                @Model.Status
+            </span>
+        </div>
+
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+            <div>
+                <dt class="text-gray-500">Item</dt>
+                <dd class="font-medium text-gray-900">
+                    @(Model.Inventory?.Name ?? $"Item #{Model.InventoryID}")
+                </dd>
+            </div>
+            <div>
+                <dt class="text-gray-500">Quantity</dt>
+                <dd class="font-medium text-gray-900">
+                    @Model.Quantity @(string.IsNullOrWhiteSpace(Model.Inventory?.Unit) ? "pcs" : Model.Inventory!.Unit)
+                </dd>
+            </div>
+            <div>
+                <dt class="text-gray-500">Location</dt>
+                <dd class="font-medium text-gray-900">@Model.Location</dd>
+            </div>
+            <div>
+                <dt class="text-gray-500">Building / Unit</dt>
+                <dd class="font-medium text-gray-900">
+                    @if (string.IsNullOrWhiteSpace(Model.BuildingName) && string.IsNullOrWhiteSpace(Model.UnitName))
+                    {
+                        <span class="text-gray-400">—</span>
+                    }
+                    else
+                    {
+                        @($"{Model.BuildingName} {Model.UnitName}".Trim())
+                    }
+                </dd>
+            </div>
+            <div>
+                <dt class="text-gray-500">Delivery date</dt>
+                <dd class="font-medium text-gray-900">@Model.DateDelivered.ToString("dd MMM yyyy")</dd>
+            </div>
+            <div>
+                <dt class="text-gray-500">Total</dt>
+                <dd class="font-bold text-golden-700">KES @Model.Amount.ToString("N2")</dd>
+            </div>
+            <div>
+                <dt class="text-gray-500">Customer</dt>
+                <dd class="font-medium text-gray-900">@(Model.User?.UserName ?? "—")</dd>
+            </div>
+        </dl>
+
+        @if (!string.IsNullOrEmpty(Model.AdminNotes))
+        {
+            <div class="mt-6 alert-info">
+                <svg class="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                    <p class="font-medium">Note from the shop</p>
+                    <p class="mt-1">@Model.AdminNotes</p>
+                </div>
+            </div>
+        }
+
+        <div class="mt-8 pt-6 border-t border-golden-100 flex flex-wrap gap-3">
+            @if (Model.Status == DeliveryStatus.Pending)
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-secondary">Edit</a>
+
+                <form asp-action="Cancel" asp-route-id="@Model.Id" method="post" class="inline"
+                      onsubmit="return confirm('Cancel this delivery?');">
+                    <button type="submit" class="btn-danger">Cancel delivery</button>
+                </form>
+            }
+            <a asp-action="MyDeliveries" class="btn-secondary">Back to list</a>
+        </div>
+    </div>
+</div>

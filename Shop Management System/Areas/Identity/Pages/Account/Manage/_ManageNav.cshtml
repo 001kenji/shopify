@@ -1,0 +1,24 @@
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+
+    string LinkClass(string page) =>
+    ManageNavPages.PageNavClass(ViewContext, page) == "active"
+        ? "block px-3 py-2 rounded-md text-sm font-medium bg-golden-50 text-golden-700 border-l-2 border-golden-500"
+        : "block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-golden-50 hover:text-golden-700 border-l-2 border-transparent transition-colors";
+}
+<nav>
+    <ul class="flex flex-col gap-1">
+        <li><a class="@LinkClass(ManageNavPages.Index)" id="profile" asp-page="./Index">Profile</a></li>
+        <li><a class="@LinkClass(ManageNavPages.Email)" id="email" asp-page="./Email">Email</a></li>
+        <li><a class="@LinkClass(ManageNavPages.ChangePassword)" id="change-password" asp-page="./ChangePassword">Password</a></li>
+        @if (hasExternalLogins)
+        {
+            <li id="external-logins">
+                <a id="external-login" class="@LinkClass(ManageNavPages.ExternalLogins)" asp-page="./ExternalLogins">External logins</a>
+            </li>
+        }
+        <li><a class="@LinkClass(ManageNavPages.TwoFactorAuthentication)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
+        <li><a class="@LinkClass(ManageNavPages.PersonalData)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
+    </ul>
+</nav>

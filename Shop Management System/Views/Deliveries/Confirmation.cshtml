@@ -1,0 +1,69 @@
+﻿@model Shop_Management_System.Models.Delivery
+@using Shop_Management_System.Models
+@{
+    ViewData["Title"] = "Delivery Requested";
+}
+@using Shop_Management_System.Models
+
+@functions {
+    (string chipClass, string dotClass) DeliveryStatusStyle(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.Pending        => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        DeliveryStatus.Confirmed      => ("bg-green-50 border-green-200 text-green-700",   "bg-green-500"),
+        DeliveryStatus.OutForDelivery => ("bg-blue-50 border-blue-200 text-blue-700",      "bg-blue-500"),
+        DeliveryStatus.Delivered      => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+        DeliveryStatus.Cancelled      => ("bg-red-50 border-red-200 text-red-700",         "bg-red-500"),
+        _                             => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+    };
+
+    string DeliveryRowAccent(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.Pending        => "border-l-4 border-l-yellow-400",
+        DeliveryStatus.Confirmed      => "border-l-4 border-l-green-400",
+        DeliveryStatus.OutForDelivery => "border-l-4 border-l-blue-400",
+        DeliveryStatus.Delivered      => "border-l-4 border-l-gray-300",
+        DeliveryStatus.Cancelled      => "border-l-4 border-l-red-400",
+        _                             => "border-l-4 border-l-gray-300",
+    };
+}
+
+<div class="max-w-2xl mx-auto">
+    <div class="mb-8 text-center">
+        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-50 border border-green-200">
+            <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+        <h1 class="mt-4 text-2xl font-bold text-gray-900">Delivery request received</h1>
+        <p class="mt-1 text-sm text-gray-600">
+            We'll review your request and confirm shortly.
+        </p>
+    </div>
+
+    <div class="card p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-semibold text-gray-900">Delivery #@Model.Id.ToString("D6")</h2>
+            <span class="inline-block rounded-full bg-yellow-50 border border-yellow-200 px-3 py-0.5 text-xs font-medium text-yellow-700">
+                Pending
+            </span>
+        </div>
+
+        <dl class="grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
+            <div><dt class="text-gray-500">Item</dt><dd class="font-medium text-gray-900">@Model.Inventory?.Name</dd></div>
+            <div><dt class="text-gray-500">Quantity</dt><dd class="font-medium text-gray-900">@Model.Quantity @(Model.Inventory?.Unit ?? "pcs")</dd></div>
+            <div><dt class="text-gray-500">Location</dt><dd class="font-medium text-gray-900">@Model.Location</dd></div>
+            <div><dt class="text-gray-500">Requested date</dt><dd class="font-medium text-gray-900">@Model.DateDelivered.ToString("dd MMM yyyy")</dd></div>
+            <div class="col-span-2"><dt class="text-gray-500">Amount</dt><dd class="font-bold text-golden-700">KES @Model.Amount.ToString("N2")</dd></div>
+        </dl>
+
+        <div class="mt-6 alert-info">
+            <p class="font-medium">What happens next</p>
+            <p class="mt-1 text-sm">A shop admin will review your request and confirm the delivery. You'll be notified once it's out for delivery.</p>
+        </div>
+    </div>
+
+    <div class="mt-6 flex flex-wrap items-center gap-3">
+        <a asp-controller="Shop" asp-action="Index" class="btn-primary w-auto px-6">Continue shopping</a>
+        <a asp-action="MyDeliveries" class="btn-secondary">My deliveries</a>
+    </div>
+</div>

@@ -1,0 +1,85 @@
+﻿@model ErrorViewModel
+@using Microsoft.Extensions.Hosting
+@inject IWebHostEnvironment Env
+
+@{
+    ViewData["Title"] = "Something went wrong";
+    var isDevelopment = Env.IsDevelopment();
+}
+
+<div class="max-w-2xl mx-auto py-16">
+
+    <!-- Icon + heading -->
+    <div class="text-center">
+        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full
+                    bg-golden-50 border border-golden-200">
+            <svg class="h-8 w-8 text-golden-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 9v3m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+            </svg>
+        </div>
+
+        <h1 class="mt-6 text-3xl font-bold text-gray-900">
+            Something went wrong
+        </h1>
+        <p class="mt-3 text-sm text-gray-600 max-w-md mx-auto leading-relaxed">
+            An unexpected error occurred while processing your request.
+            Please try again — if the problem continues, contact support.
+        </p>
+    </div>
+
+    <!-- Request ID (only when available) -->
+    @if (Model.ShowRequestId)
+    {
+        <div class="card p-4 mt-8 flex items-center justify-between gap-4">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    Request ID
+                </p>
+                <p class="mt-1 text-xs text-gray-600">
+                    Share this with support so we can trace the issue.
+                </p>
+            </div>
+            <code class="font-mono text-xs text-golden-800 bg-golden-50 border border-golden-200
+                         rounded px-2.5 py-1.5 select-all">
+                @Model.RequestId
+            </code>
+        </div>
+    }
+
+    <!-- Actions -->
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <a asp-controller="Home" asp-action="Index" class="btn-primary w-auto px-6">
+            Back to home
+        </a>
+        <a asp-controller="Shop" asp-action="Index" class="btn-secondary">
+            Go to shop
+        </a>
+    </div>
+
+    <!-- Dev-only technical details -->
+    @if (isDevelopment)
+    {
+        <div class="mt-12 alert-warning">
+            <svg class="h-5 w-5 shrink-0 text-golden-600 mt-0.5" fill="none"
+                 stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 9v3m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+            </svg>
+            <div>
+                <p class="font-medium">Development mode</p>
+                <p class="mt-1 text-sm leading-relaxed">
+                    You're seeing this page because the app is running in the
+                    <strong>Development</strong> environment. To view detailed exception
+                    information, enable the developer exception page — this should
+                    <strong>never</strong> be enabled in a deployed application.
+                </p>
+                <p class="mt-3 text-xs text-golden-800">
+                    Set the <code class="font-mono bg-white/60 border border-golden-200 rounded px-1.5 py-0.5">ASPNETCORE_ENVIRONMENT</code>
+                    environment variable to <code class="font-mono bg-white/60 border border-golden-200 rounded px-1.5 py-0.5">Development</code>
+                    and restart the app.
+                </p>
+            </div>
+        </div>
+    }
+</div>

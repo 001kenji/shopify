@@ -1,0 +1,129 @@
+@model Shop_Management_System.Models.Inventory
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="max-w-2xl mx-auto">
+    <div class="mb-8">
+        <nav class="text-sm text-gray-500 mb-2">
+            <a asp-action="Index" class="hover:text-golden-600 transition-colors">Inventory</a>
+            <span class="mx-1">/</span>
+            <span class="text-gray-700">Create</span>
+        </nav>
+        <h1 class="text-2xl font-bold text-gray-900">Create Inventory Item</h1>
+        <p class="mt-1 text-sm text-gray-600">Add a new item to your shop inventory.</p>
+    </div>
+
+    <div class="card p-6 sm:p-8">
+        <form asp-action="Create" enctype="multipart/form-data" class="space-y-6">
+            <div asp-validation-summary="All" class="text-sm text-red-600" role="alert"></div>
+
+            <div class="grid sm:grid-cols-2 gap-5">
+                <div class="sm:col-span-2">
+                    <label asp-for="Name" class="form-label">Name</label>
+                    <input asp-for="Name" class="form-input" placeholder="e.g. Organic Coffee Beans" />
+                    <span asp-validation-for="Name" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label asp-for="Description" class="form-label">Description</label>
+                    <textarea asp-for="Description" rows="3" class="form-input"
+                              placeholder="Short description of the item"></textarea>
+                    <span asp-validation-for="Description" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Categories" class="form-label">Category</label>
+                    <select asp-for="Categories" asp-items="ViewBag.Categories" class="form-input">
+                        <option value="">-- Select a category --</option>
+                    </select>
+                    <span asp-validation-for="Categories" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Unit" class="form-label">Unit</label>
+                    <select asp-for="Unit" class="form-input">
+                        <option value="">-- Select unit --</option>
+                        <option value="pcs">Pieces (pcs)</option>
+                        <option value="kg">Kilograms (kg)</option>
+                        <option value="g">Grams (g)</option>
+                        <option value="L">Litres (L)</option>
+                        <option value="ml">Millilitres (ml)</option>
+                        <option value="pack">Pack</option>
+                        <option value="box">Box</option>
+                        <option value="dozen">Dozen</option>
+                    </select>
+                    <span asp-validation-for="Unit" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="BestBefore" class="form-label">Best Before</label>
+                    <input asp-for="BestBefore" type="date" class="form-input" />
+                    <span asp-validation-for="BestBefore" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Quantity" class="form-label">Quantity</label>
+                    <input asp-for="Quantity" class="form-input" placeholder="0" />
+                    <span asp-validation-for="Quantity" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="BuyingPrice" class="form-label">Buying Price</label>
+                    <input asp-for="BuyingPrice" class="form-input" placeholder="0.00" />
+                    <span asp-validation-for="BuyingPrice" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="SellingPrice" class="form-label">Selling Price</label>
+                    <input asp-for="SellingPrice" class="form-input" placeholder="0.00" />
+                    <span asp-validation-for="SellingPrice" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label asp-for="DeliveryRadius" class="form-label">Delivery Radius</label>
+                    <input asp-for="DeliveryRadius" class="form-input" placeholder="e.g. 5 km" />
+                    <span asp-validation-for="DeliveryRadius" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+            </div>
+
+            <label asp-for="Is_Delivarable"
+                   class="flex items-center gap-3 rounded-md border border-golden-200 bg-golden-50/50 px-4 py-3 cursor-pointer hover:bg-golden-50 transition-colors">
+                <input asp-for="Is_Delivarable"
+                       class="h-4 w-4 rounded border-golden-300 text-golden-500 focus:ring-golden-400" />
+                <span class="text-sm font-medium text-gray-800">This item is deliverable</span>
+            </label>
+            <span asp-validation-for="Is_Delivarable" class="block text-xs text-red-600"></span>
+
+            <div>
+                <label class="form-label">
+                    <span class="inline-flex items-center gap-1.5">
+                        <svg class="h-4 w-4 text-golden-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1M12 12V4m0 0L8 8m4-4 4 4" />
+                        </svg>
+                        Upload Item Image
+                    </span>
+                </label>
+                <input type="file" name="ImageFile" accept="image/*" required
+                       class="block w-full text-sm text-gray-700
+                              file:mr-4 file:py-2 file:px-4 file:rounded-md
+                              file:border-0 file:text-sm file:font-medium
+                              file:bg-golden-50 file:text-golden-700
+                              hover:file:bg-golden-100 file:cursor-pointer
+                              border border-golden-200 rounded-md p-1" />
+                @Html.ValidationMessage("ImageFile", new { @class = "mt-1 block text-xs text-red-600" })
+            </div>
+
+            <div class="flex items-center gap-3 pt-2 border-t border-golden-100">
+                <button type="submit" class="btn-primary w-auto px-6">Create</button>
+                <a asp-action="Index" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

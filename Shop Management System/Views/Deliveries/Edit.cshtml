@@ -1,0 +1,94 @@
+@model Shop_Management_System.Models.Delivery
+@{
+    ViewData["Title"] = "Edit Delivery";
+    var inventoryName = ViewData["InventoryName"]?.ToString();
+}
+@using Shop_Management_System.Models
+
+@functions {
+    (string chipClass, string dotClass) DeliveryStatusStyle(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.Pending        => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        DeliveryStatus.Confirmed      => ("bg-green-50 border-green-200 text-green-700",   "bg-green-500"),
+        DeliveryStatus.OutForDelivery => ("bg-blue-50 border-blue-200 text-blue-700",      "bg-blue-500"),
+        DeliveryStatus.Delivered      => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+        DeliveryStatus.Cancelled      => ("bg-red-50 border-red-200 text-red-700",         "bg-red-500"),
+        _                             => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+    };
+
+    string DeliveryRowAccent(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.Pending        => "border-l-4 border-l-yellow-400",
+        DeliveryStatus.Confirmed      => "border-l-4 border-l-green-400",
+        DeliveryStatus.OutForDelivery => "border-l-4 border-l-blue-400",
+        DeliveryStatus.Delivered      => "border-l-4 border-l-gray-300",
+        DeliveryStatus.Cancelled      => "border-l-4 border-l-red-400",
+        _                             => "border-l-4 border-l-gray-300",
+    };
+}
+
+<div class="max-w-2xl mx-auto">
+
+    <nav class="text-sm text-gray-500 mb-4">
+        <a asp-action="MyDeliveries" class="hover:text-golden-600 transition-colors">My deliveries</a>
+        <span class="mx-1">/</span>
+        <span class="text-gray-700">Edit</span>
+    </nav>
+
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">Edit delivery #@Model.Id.ToString("D6")</h1>
+        <p class="mt-1 text-sm text-gray-600">
+            Item: <strong>@(string.IsNullOrWhiteSpace(inventoryName) ? "—" : inventoryName)</strong> — only pending deliveries can be edited.
+        </p>
+    </div>
+
+    <div class="card p-6 sm:p-8">
+        <form asp-action="Edit" class="space-y-5">
+            <div asp-validation-summary="All" class="text-sm text-red-600" role="alert"></div>
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="InventoryID" />
+
+            <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                    <label asp-for="Quantity" class="form-label">Quantity</label>
+                    <input asp-for="Quantity" type="number" min="1" class="form-input" />
+                    <span asp-validation-for="Quantity" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="DateDelivered" class="form-label">Delivery Date</label>
+                    <input asp-for="DateDelivered" type="date" class="form-input" />
+                    <span asp-validation-for="DateDelivered" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label asp-for="Location" class="form-label">Location</label>
+                    <input asp-for="Location" class="form-input" />
+                    <span asp-validation-for="Location" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="BuildingName" class="form-label">Building Name</label>
+                    <input asp-for="BuildingName" class="form-input" />
+                    <span asp-validation-for="BuildingName" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="UnitName" class="form-label">Unit / Apartment</label>
+                    <input asp-for="UnitName" class="form-input" />
+                    <span asp-validation-for="UnitName" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2 border-t border-golden-100">
+                <button type="submit" class="btn-primary w-auto px-6">Save changes</button>
+                <a asp-action="MyDeliveries" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

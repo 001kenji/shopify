@@ -1,0 +1,41 @@
+﻿@model Shop_Management_System.Services.EmailModels.BookingEmail
+@{
+    Layout = "~/Views/EmailTemplates/_EmailLayout.cshtml";
+    ViewData["EmailTitle"] = "Booking confirmed";
+}
+
+<h1 style="margin:0 0 16px 0; color:#c07d22; font-size:22px;">Your booking is confirmed</h1>
+
+<p style="margin:0 0 24px 0; line-height:1.6;">
+    Hi @Model.UserName, your booking <strong>#@Model.Reference</strong> has been received.
+</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+       style="border-collapse:collapse; margin-bottom:24px;">
+    <tr>
+        <td style="padding:8px 0; color:#666; font-size:13px;">Item</td>
+        <td style="padding:8px 0; color:#333; font-size:13px; text-align:right; font-weight:600;">@Model.ItemName</td>
+    </tr>
+    <tr>
+        <td style="padding:8px 0; color:#666; font-size:13px;">Quantity</td>
+        <td style="padding:8px 0; color:#333; font-size:13px; text-align:right; font-weight:600;">@Model.Quantity @Model.Unit</td>
+    </tr>
+    <tr>
+        <td style="padding:8px 0; color:#666; font-size:13px;">Pickup time</td>
+        <td style="padding:8px 0; color:#333; font-size:13px; text-align:right; font-weight:600;">@Model.PickupDate</td>
+    </tr>
+    <tr>
+        <td style="padding:8px 0; color:#666; font-size:13px; border-top:1px solid #f4dfae;">Total</td>
+        <td style="padding:8px 0; color:#c07d22; font-size:14px; text-align:right; font-weight:700; border-top:1px solid #f4dfae;">
+            KES @Model.Total
+        </td>
+    </tr>
+</table>
+
+<p style="margin:0 0 16px 0; line-height:1.6;">
+    Please arrive on time and bring this reference number.
+</p>
+
+<p style="margin:0; font-size:13px; color:#666;">
+    If you can't make it, contact the shop to reschedule.
+</p>

@@ -1,0 +1,53 @@
+@model Shop_Management_System.Models.Booking
+
+@{
+    ViewData["Title"] = "Edit Booking";
+}
+
+<div class="max-w-2xl mx-auto">
+    <div class="mb-8">
+        <nav class="text-sm text-gray-500 mb-2">
+            <a asp-action="Index" class="hover:text-golden-600 transition-colors">Bookings</a>
+            <span class="mx-1">/</span>
+            <span class="text-gray-700">Edit</span>
+        </nav>
+        <h1 class="text-2xl font-bold text-gray-900">Edit Booking</h1>
+        <p class="mt-1 text-sm text-gray-600">Update the details for this reservation.</p>
+    </div>
+
+    <div class="card p-6 sm:p-8">
+        <form asp-action="Edit" class="space-y-5">
+            <div asp-validation-summary="All" class="text-sm text-red-600" role="alert"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                    <label asp-for="Quantity" class="form-label">Quantity</label>
+                    <input asp-for="Quantity" class="form-input" />
+                    <span asp-validation-for="Quantity" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="PickingDuration" class="form-label">Picking Duration</label>
+                    <input asp-for="PickingDuration" class="form-input" />
+                    <span asp-validation-for="PickingDuration" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label asp-for="DateOrdered" class="form-label">Date Ordered</label>
+                    <input asp-for="DateOrdered" type="datetime-local" class="form-input" />
+                    <span asp-validation-for="DateOrdered" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2 border-t border-golden-100">
+                <button type="submit" class="btn-primary w-auto px-6">Save</button>
+                <a asp-action="Index" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

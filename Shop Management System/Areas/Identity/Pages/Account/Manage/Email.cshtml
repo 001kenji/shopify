@@ -1,0 +1,54 @@
+@page
+@model EmailModel
+@{
+    ViewData["Title"] = "Manage Email";
+    ViewData["ActivePage"] = ManageNavPages.Email;
+}
+
+<h3 class="text-xl font-semibold text-gray-900">@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<form id="email-form" method="post" class="mt-6 max-w-md space-y-5">
+    <div asp-validation-summary="All" class="text-sm text-red-600" role="alert"></div>
+
+    @if (Model.IsEmailConfirmed)
+    {
+        <div>
+            <label asp-for="Email" class="form-label"></label>
+            <div class="flex items-center gap-2">
+                <input asp-for="Email" class="form-input bg-gray-50 text-gray-500 cursor-not-allowed" disabled />
+                <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-golden-50 text-golden-600">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7" />
+                    </svg>
+                </span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div>
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-input bg-gray-50 text-gray-500 cursor-not-allowed" disabled />
+            <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail"
+                    class="mt-2 link-golden text-sm">
+                Send verification email
+            </button>
+        </div>
+    }
+
+    <div>
+        <label asp-for="Input.NewEmail" class="form-label"></label>
+        <input asp-for="Input.NewEmail" class="form-input" autocomplete="email"
+               aria-required="true" placeholder="Please enter new email." />
+        <span asp-validation-for="Input.NewEmail" class="mt-1 block text-xs text-red-600"></span>
+    </div>
+
+    <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="btn-primary">
+        Change email
+    </button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

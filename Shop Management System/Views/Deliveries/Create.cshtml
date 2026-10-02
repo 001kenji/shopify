@@ -1,0 +1,119 @@
+@using Shop_Management_System.Models
+
+@functions {
+    (string chipClass, string dotClass) DeliveryStatusStyle(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.Pending        => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        DeliveryStatus.Confirmed      => ("bg-green-50 border-green-200 text-green-700",   "bg-green-500"),
+        DeliveryStatus.OutForDelivery => ("bg-blue-50 border-blue-200 text-blue-700",      "bg-blue-500"),
+        DeliveryStatus.Delivered      => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+        DeliveryStatus.Cancelled      => ("bg-red-50 border-red-200 text-red-700",         "bg-red-500"),
+        _                             => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+    };
+
+    string DeliveryRowAccent(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.Pending        => "border-l-4 border-l-yellow-400",
+        DeliveryStatus.Confirmed      => "border-l-4 border-l-green-400",
+        DeliveryStatus.OutForDelivery => "border-l-4 border-l-blue-400",
+        DeliveryStatus.Delivered      => "border-l-4 border-l-gray-300",
+        DeliveryStatus.Cancelled      => "border-l-4 border-l-red-400",
+        _                             => "border-l-4 border-l-gray-300",
+    };
+}
+
+    @model Shop_Management_System.Models.Delivery
+@{
+    ViewData["Title"] = "Request Delivery";
+    var inventoryName = ViewData["InventoryName"]?.ToString();
+    var availableQty = ViewData["AvailableQuantity"];
+    var unit = ViewData["Unit"]?.ToString();
+    var price = ViewData["InventoryPrice"];
+    var radius = ViewData["DeliveryRadius"]?.ToString();
+}
+
+<div class="max-w-2xl mx-auto">
+
+    <nav class="text-sm text-gray-500 mb-4">
+        <a asp-controller="Shop" asp-action="Index" class="hover:text-golden-600 transition-colors">Shop</a>
+        <span class="mx-1">/</span>
+        <span class="text-gray-700">Request delivery</span>
+    </nav>
+
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">
+            Request delivery of @(string.IsNullOrWhiteSpace(inventoryName) ? "this item" : inventoryName)
+        </h1>
+        <p class="mt-1 text-sm text-gray-600">
+            Available quantity: @availableQty @unit
+        </p>
+    </div>
+
+    <div class="card p-6 sm:p-8">
+        <form asp-action="Create" class="space-y-5">
+            <div asp-validation-summary="All" class="text-sm text-red-600" role="alert"></div>
+
+            <input type="hidden" asp-for="InventoryID" />
+
+            <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                    <label asp-for="Quantity" class="form-label">Quantity</label>
+                    <input asp-for="Quantity" type="number" min="1" class="form-input" />
+                    <span asp-validation-for="Quantity" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="DateDelivered" class="form-label">Delivery Date</label>
+                    <input asp-for="DateDelivered" type="date" class="form-input" />
+                    <span asp-validation-for="DateDelivered" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label asp-for="Location" class="form-label">Location</label>
+                    <input asp-for="Location" class="form-input" placeholder="e.g. Westlands, Nairobi" />
+                    <span asp-validation-for="Location" class="mt-1 block text-xs text-red-600"></span>
+                    @if (!string.IsNullOrWhiteSpace(radius))
+                    {
+                        <p class="mt-1 text-xs text-gray-500">
+                            Delivery available within @radius
+                        </p>
+                    }
+                </div>
+
+                <div>
+                    <label asp-for="BuildingName" class="form-label">Building Name</label>
+                    <input asp-for="BuildingName" class="form-input" placeholder="e.g. Golden Plaza" />
+                    <span asp-validation-for="BuildingName" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="UnitName" class="form-label">Unit / Apartment</label>
+                    <input asp-for="UnitName" class="form-input" placeholder="e.g. Apt 4B" />
+                    <span asp-validation-for="UnitName" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+            </div>
+
+            <!-- Price summary -->
+            <div class="rounded-md bg-golden-50/50 border border-golden-100 p-4 text-sm">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Item price</span>
+                    <span class="font-medium text-gray-900">KES @price</span>
+                </div>
+                <div class="flex justify-between mt-1">
+                    <span class="text-gray-600">Delivery cost</span>
+                    <span class="font-medium text-gray-900">KES 0.00</span>
+                </div>
+                <p class="mt-2 text-xs text-gray-500">Final amount is calculated on confirmation.</p>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2 border-t border-golden-100">
+                <button type="submit" class="btn-primary w-auto px-6">Request delivery</button>
+                <a asp-controller="Shop" asp-action="Index" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

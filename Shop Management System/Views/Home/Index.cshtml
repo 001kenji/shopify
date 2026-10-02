@@ -1,0 +1,450 @@
+﻿@{
+    ViewData["Title"] = "Home";
+    var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+}
+
+<!-- ===================== HERO ===================== -->
+<section class="relative overflow-hidden bg-white">
+    <!-- Soft golden backdrop -->
+    <div class="absolute inset-0 -z-10">
+        <div class="absolute -top-32 -right-24 h-96 w-96 rounded-full bg-golden-100 blur-3xl opacity-60"></div>
+        <div class="absolute -bottom-40 -left-24 h-96 w-96 rounded-full bg-golden-50 blur-3xl opacity-70"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+            <!-- Copy -->
+            <div>
+                <span class="inline-flex items-center gap-2 rounded-full border border-golden-200
+                             bg-golden-50 px-3 py-1 text-xs font-medium text-golden-700">
+                    <span class="h-1.5 w-1.5 rounded-full bg-golden-500"></span>
+                    Shop smarter, not harder
+                </span>
+
+                <h1 class="mt-6 text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-tight">
+                    Your everyday shop,
+                    <span class="text-golden-600">organised.</span>
+                </h1>
+
+                <p class="mt-6 text-lg text-gray-600 leading-relaxed max-w-xl">
+                    Browse products, reserve what you need, and get it delivered
+                    — all from one place. No queues, no guesswork, no wasted trips.
+                </p>
+
+                <div class="mt-8 flex flex-wrap items-center gap-3">
+                    <a asp-controller="Shop" asp-action="Index"
+                       class="btn-primary w-auto px-6">
+                        Browse the shop
+                        <svg class="h-4 w-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M17 8l4 4m0 0-4 4m4-4H3" />
+                        </svg>
+                    </a>
+
+                    @if (!isAuthenticated)
+                    {
+                        <a asp-area="Identity" asp-page="/Account/Register"
+                           class="btn-secondary w-auto px-6">
+                            Create an account
+                        </a>
+                    }
+                </div>
+
+                <!-- Trust markers -->
+                <dl class="mt-12 grid grid-cols-3 gap-6 max-w-lg">
+                    <div>
+                        <dt class="text-2xl font-bold text-golden-600">Reserve</dt>
+                        <dd class="mt-1 text-xs text-gray-500 uppercase tracking-wide">In seconds</dd>
+                    </div>
+                    <div>
+                        <dt class="text-2xl font-bold text-golden-600">Pickup</dt>
+                        <dd class="mt-1 text-xs text-gray-500 uppercase tracking-wide">When it suits you</dd>
+                    </div>
+                    <div>
+                        <dt class="text-2xl font-bold text-golden-600">Deliver</dt>
+                        <dd class="mt-1 text-xs text-gray-500 uppercase tracking-wide">To your door</dd>
+                    </div>
+                </dl>
+            </div>
+
+            <!-- Visual: mock card -->
+            <div class="relative">
+                <div class="card p-6 sm:p-8 shadow-md">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+                            Your cart preview
+                        </h2>
+                        <span class="inline-flex items-center gap-1.5 rounded-full border border-golden-200
+                                     bg-golden-50 px-2.5 py-0.5 text-xs font-medium text-golden-700">
+                            <span class="h-1.5 w-1.5 rounded-full bg-golden-500"></span>
+                            Ready
+                        </span>
+                    </div>
+
+                    <!-- Mock item rows -->
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="h-12 w-12 rounded-md bg-golden-100 border border-golden-200
+                                        flex items-center justify-center text-golden-500">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M20 7 12 3 4 7m16 0-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="h-2.5 w-32 rounded-full bg-gray-100"></div>
+                                <div class="mt-1.5 h-2 w-20 rounded-full bg-gray-100"></div>
+                            </div>
+                            <div class="text-sm font-semibold text-golden-700">KES 450</div>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <div class="h-12 w-12 rounded-md bg-golden-100 border border-golden-200
+                                        flex items-center justify-center text-golden-500">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M3 7h13l3 5v5h-2M3 7v10h2m0 0a2 2 0 104 0m-4 0a2 2 0 014 0m9 0a2 2 0 11-4 0m4 0a2 2 0 10-4 0" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="h-2.5 w-40 rounded-full bg-gray-100"></div>
+                                <div class="mt-1.5 h-2 w-24 rounded-full bg-gray-100"></div>
+                            </div>
+                            <div class="text-sm font-semibold text-golden-700">KES 1,200</div>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <div class="h-12 w-12 rounded-md bg-golden-100 border border-golden-200
+                                        flex items-center justify-center text-golden-500">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="h-2.5 w-28 rounded-full bg-gray-100"></div>
+                                <div class="mt-1.5 h-2 w-16 rounded-full bg-gray-100"></div>
+                            </div>
+                            <div class="text-sm font-semibold text-golden-700">KES 320</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-golden-100 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 uppercase tracking-wide">Total</span>
+                        <span class="text-lg font-bold text-golden-700">KES 1,970.00</span>
+                    </div>
+                </div>
+
+                <!-- Floating chip -->
+                <div class="hidden sm:flex absolute -bottom-4 -left-4 items-center gap-2 rounded-full
+                            bg-white border border-golden-200 px-4 py-2 shadow-sm">
+                    <svg class="h-4 w-4 text-golden-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span class="text-xs font-medium text-gray-700">Confirmed in seconds</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section class="bg-golden-50/60 border-y border-golden-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="text-center max-w-2xl mx-auto">
+            <span class="text-xs font-semibold text-golden-700 uppercase tracking-wider">
+                How it works
+            </span>
+            <h2 class="mt-2 text-3xl font-bold text-gray-900">
+                Two ways to get what you need
+            </h2>
+            <p class="mt-3 text-gray-600">
+                Whether you'd rather swing by the shop or have it brought to you,
+                the process is the same three steps.
+            </p>
+        </div>
+
+        <div class="mt-14 grid md:grid-cols-3 gap-6">
+
+            <div class="card p-6 sm:p-8">
+                <div class="flex items-center justify-center h-12 w-12 rounded-full
+                            bg-golden-100 text-golden-700 font-bold">
+                    1
+                </div>
+                <h3 class="mt-5 text-lg font-semibold text-gray-900">Browse the shop</h3>
+                <p class="mt-2 text-sm text-gray-600 leading-relaxed">
+                    Search by name, filter by category, and check live stock levels.
+                    Each product shows its price, unit, and whether delivery is available.
+                </p>
+            </div>
+
+            <div class="card p-6 sm:p-8">
+                <div class="flex items-center justify-center h-12 w-12 rounded-full
+                            bg-golden-100 text-golden-700 font-bold">
+                    2
+                </div>
+                <h3 class="mt-5 text-lg font-semibold text-gray-900">Book or request delivery</h3>
+                <p class="mt-2 text-sm text-gray-600 leading-relaxed">
+                    <strong class="text-gray-900">Book</strong> to reserve an item for pickup at your
+                    convenience, or <strong class="text-gray-900">request a delivery</strong> if the
+                    product supports it — just add your address and preferred date.
+                </p>
+            </div>
+
+            <div class="card p-6 sm:p-8">
+                <div class="flex items-center justify-center h-12 w-12 rounded-full
+                            bg-golden-100 text-golden-700 font-bold">
+                    3
+                </div>
+                <h3 class="mt-5 text-lg font-semibold text-gray-900">Track and collect</h3>
+                <p class="mt-2 text-sm text-gray-600 leading-relaxed">
+                    Follow the status from your dashboard — Pending, Confirmed,
+                    and beyond. You'll always know exactly what's next.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== BOOKING VS DELIVERY ===================== -->
+<section class="bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+
+        <div class="text-center max-w-2xl mx-auto">
+            <span class="text-xs font-semibold text-golden-700 uppercase tracking-wider">
+                Two options, one platform
+            </span>
+            <h2 class="mt-2 text-3xl font-bold text-gray-900">
+                Booking or delivery?
+            </h2>
+            <p class="mt-3 text-gray-600">
+                Both start the same way — pick a product, choose a quantity. The rest is up to you.
+            </p>
+        </div>
+
+        <div class="mt-14 grid lg:grid-cols-2 gap-6">
+
+            <!-- Booking card -->
+            <div class="card p-8 flex flex-col">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-full
+                                bg-golden-100 text-golden-700">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0
+                                     00-2 2v12a2 2 0 002 2Z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900">Booking for pickup</h3>
+                </div>
+
+                <p class="mt-4 text-sm text-gray-600 leading-relaxed">
+                    Reserve the item now, pick it up whenever works for you.
+                    We'll hold it so you don't have to worry about it selling out.
+                </p>
+
+                <ul class="mt-6 space-y-3 text-sm text-gray-700">
+                    <li class="flex items-start gap-2">
+                        <svg class="h-4 w-4 shrink-0 text-golden-500 mt-0.5" fill="none"
+                             stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="m5 13 4 4L19 7" />
+                        </svg>
+                        Choose a quantity and pickup time
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="h-4 w-4 shrink-0 text-golden-500 mt-0.5" fill="none"
+                             stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="m5 13 4 4L19 7" />
+                        </svg>
+                        Track status: Pending → Confirmed → Completed
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="h-4 w-4 shrink-0 text-golden-500 mt-0.5" fill="none"
+                             stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="m5 13 4 4L19 7" />
+                        </svg>
+                        Cancel anytime before pickup
+                    </li>
+                </ul>
+
+                <div class="mt-8 pt-6 border-t border-golden-100">
+                    <a asp-controller="Shop" asp-action="Index"
+                       class="btn-primary w-auto px-6">
+                        Start a booking
+                    </a>
+                </div>
+            </div>
+
+            <!-- Delivery card -->
+            <div class="card p-8 flex flex-col">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-full
+                                bg-golden-100 text-golden-700">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M3 7h13l3 5v5h-2M3 7v10h2m0 0a2 2 0 104 0m-4 0a2 2 0 014 0m9 0a2 2
+                                     0 11-4 0m4 0a2 2 0 10-4 0" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900">Delivery to your door</h3>
+                </div>
+
+                <p class="mt-4 text-sm text-gray-600 leading-relaxed">
+                    Available on select items within the shop's delivery radius.
+                    Tell us where and when, and we'll take care of the rest.
+                </p>
+
+                <ul class="mt-6 space-y-3 text-sm text-gray-700">
+                    <li class="flex items-start gap-2">
+                        <svg class="h-4 w-4 shrink-0 text-golden-500 mt-0.5" fill="none"
+                             stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="m5 13 4 4L19 7" />
+                        </svg>
+                        Add your location, building and unit
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="h-4 w-4 shrink-0 text-golden-500 mt-0.5" fill="none"
+                             stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="m5 13 4 4L19 7" />
+                        </svg>
+                        Track status: Pending → Confirmed → Out for delivery → Delivered
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="h-4 w-4 shrink-0 text-golden-500 mt-0.5" fill="none"
+                             stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="m5 13 4 4L19 7" />
+                        </svg>
+                        Only shown when the item is within your area
+                    </li>
+                </ul>
+
+                <div class="mt-8 pt-6 border-t border-golden-100">
+                    <a asp-controller="Shop" asp-action="Index"
+                       class="btn-secondary w-auto px-6">
+                        Find deliverable items
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== TRUST / FEATURES ===================== -->
+<section class="bg-golden-50/60 border-y border-golden-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="grid md:grid-cols-3 gap-8">
+
+            <div class="flex gap-4">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-md
+                            bg-white border border-golden-200 text-golden-600">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0
+                                 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-900">Your account, your data</h3>
+                    <p class="mt-1 text-sm text-gray-600 leading-relaxed">
+                        Manage your profile, download your data, or delete your account
+                        at any time from the account settings page.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-md
+                            bg-white border border-golden-200 text-golden-600">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 12l2 2 4-4M12 21a9 9 0 110-18 9 9 0 010 18z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-900">Live stock accuracy</h3>
+                    <p class="mt-1 text-sm text-gray-600 leading-relaxed">
+                        Quantities update in real time. If an item sells out,
+                        you'll know before you book — no false promises.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-md
+                            bg-white border border-golden-200 text-golden-600">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-900">Fast confirmations</h3>
+                    <p class="mt-1 text-sm text-gray-600 leading-relaxed">
+                        Bookings and deliveries are reviewed quickly. You'll see
+                        the status change in your dashboard as soon as it's approved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== FINAL CTA ===================== -->
+<section class="bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="card p-10 sm:p-14 text-center relative overflow-hidden">
+            <div class="absolute inset-0 -z-10">
+                <div class="absolute -top-24 left-1/2 -translate-x-1/2 h-72 w-72 rounded-full
+                            bg-golden-100 blur-3xl opacity-50"></div>
+            </div>
+
+            <h2 class="text-3xl font-bold text-gray-900">
+                Ready to make it yours?
+            </h2>
+            <p class="mt-3 text-gray-600 max-w-xl mx-auto">
+                @if (isAuthenticated)
+                {
+                    <span>Head over to the shop and start booking or requesting deliveries.</span>
+                }
+                else
+                {
+                    <span>Create a free account in under a minute, then start booking
+                          or requesting deliveries right away.</span>
+                }
+            </p>
+
+            <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+                @if (isAuthenticated)
+                {
+                    <a asp-controller="Shop" asp-action="Index"
+                       class="btn-primary w-auto px-6">
+                        Browse the shop
+                    </a>
+                    <a asp-controller="Bookings" asp-action="MyBookings"
+                       class="btn-secondary">
+                        My bookings
+                    </a>
+                }
+                else
+                {
+                    <a asp-area="Identity" asp-page="/Account/Register"
+                       class="btn-primary w-auto px-6">
+                        Create an account
+                    </a>
+                    <a asp-area="Identity" asp-page="/Account/Login"
+                       class="btn-secondary">
+                        Sign in
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</section>

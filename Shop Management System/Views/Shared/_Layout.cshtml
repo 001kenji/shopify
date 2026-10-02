@@ -1,0 +1,138 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Shop_Management_System.Data
+@inject SignInManager<ApplicationUser> SignInManager
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Shopify</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/favicon-32x32.png" asp-append-version="true" />
+    <link rel="icon" type="image/png" sizes="16x16" href="~/favicon-16x16.png" asp-append-version="true" />
+    <link rel="apple-touch-icon" sizes="180x180" href="~/apple-touch-icon.png" asp-append-version="true" />
+    <link rel="manifest" href="~/site.webmanifest" asp-append-version="true" />
+    <meta name="theme-color" content="#C07D22" />
+
+    <!-- Only link the compiled output.css -->
+    <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
+</head>
+<body class="min-h-screen flex flex-col bg-white text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-golden-200 shadow-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+
+                <!-- Brand -->
+                <a asp-area="" asp-controller="Shop" asp-action="Index"
+                   class="text-xl font-bold tracking-tight text-golden-600 hover:text-golden-700 transition-colors">
+                    Shopify
+                </a>
+
+                <!-- Mobile menu button -->
+                <button id="nav-toggle" type="button"
+                        class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-golden-600 hover:text-golden-700 hover:bg-golden-50 focus:outline-none focus:ring-2 focus:ring-golden-400"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+
+                <!-- Nav links -->
+                <div id="navbarSupportedContent" class="hidden md:flex md:items-center md:justify-between md:flex-1 md:ml-8">
+                    <ul class="flex flex-col md:flex-row md:items-center md:space-x-2">
+                         <li>
+                             <a class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-golden-600 hover:bg-golden-50 transition-colors"
+                               asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                         </li>
+                        
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                            {
+                                <li>
+                                    <a class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-golden-600 hover:bg-golden-50 transition-colors"
+                                       asp-area="" asp-controller="Inventories" asp-action="Index">Inventory</a>
+                                </li>
+                            }
+                        @if (SignInManager.IsSignedIn(User))
+                            {
+                                <li>
+                                    <a class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-golden-600 hover:bg-golden-50 transition-colors"
+                                       asp-area="" asp-controller="Shop" asp-action="Index">Shop</a>
+                                </li>
+
+                                
+                            }
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <li>
+                                    <a class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-golden-600 hover:bg-golden-50 transition-colors"
+                                       asp-area="" asp-controller="Bookings" asp-action="Index">Bookings</a>
+                                </li>
+                                
+                            }
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <li>
+                                    <a class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-golden-600 hover:bg-golden-50 transition-colors"
+                                       asp-area="" asp-controller="Deliveries" asp-action="Index">Deliveries</a>
+                                </li>
+                                
+                            }
+                            
+                        
+                        </ul>
+                    <div class="mt-4 md:mt-0">
+                        <partial name="_LoginPartial" />
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main -->
+    <div class="flex-1 w-full">
+        <main role="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-golden-50 border-t border-golden-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-center text-sm text-golden-800">
+                &copy; 2026 - Shopify -
+                <a asp-area="" asp-controller="Home" asp-action="Privacy"
+                   class="font-medium text-golden-600 hover:text-golden-700 underline-offset-2 hover:underline">Privacy</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Mobile nav toggle -->
+    <script>
+        (function () {
+            const btn = document.getElementById('nav-toggle');
+            const menu = document.getElementById('navbarSupportedContent');
+            if (btn && menu) {
+                btn.addEventListener('click', () => {
+                    const expanded = btn.getAttribute('aria-expanded') === 'true';
+                    btn.setAttribute('aria-expanded', String(!expanded));
+                    menu.classList.toggle('hidden');
+                    menu.classList.toggle('flex');
+                    menu.classList.toggle('flex-col');
+                    menu.classList.toggle('mt-4');
+                    menu.classList.toggle('md:flex');
+                });
+            }
+        })();
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

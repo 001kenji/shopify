@@ -1,0 +1,166 @@
+@model IEnumerable<Shop_Management_System.Models.Delivery>
+@using Shop_Management_System.Models
+@{
+    ViewData["Title"] = "All Deliveries";
+}
+
+@functions {
+    (string chipClass, string dotClass) DeliveryStatusStyle(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.Pending        => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        DeliveryStatus.Confirmed      => ("bg-green-50 border-green-200 text-green-700",   "bg-green-500"),
+        DeliveryStatus.OutForDelivery => ("bg-blue-50 border-blue-200 text-blue-700",      "bg-blue-500"),
+        DeliveryStatus.Delivered      => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+        DeliveryStatus.Cancelled      => ("bg-red-50 border-red-200 text-red-700",         "bg-red-500"),
+        _                             => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+    };
+
+    string DeliveryRowAccent(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.Pending        => "border-l-4 border-l-yellow-400",
+        DeliveryStatus.Confirmed      => "border-l-4 border-l-green-400",
+        DeliveryStatus.OutForDelivery => "border-l-4 border-l-blue-400",
+        DeliveryStatus.Delivered      => "border-l-4 border-l-gray-300",
+        DeliveryStatus.Cancelled      => "border-l-4 border-l-red-400",
+        _                             => "border-l-4 border-l-gray-300",
+    };
+}
+
+<div class="max-w-7xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">All Deliveries</h1>
+        <p class="mt-1 text-sm text-gray-600">Manage customer delivery requests.</p>
+    </div>
+
+    @if (TempData["StatusMessage"] != null)
+    {
+        <div class="alert-info mb-6">
+            <svg class="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>@TempData["StatusMessage"]</div>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="card p-12 text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-golden-50">
+                <svg class="h-6 w-6 text-golden-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 7h13l3 5v5h-2M3 7v10h2m0 0a2 2 0 104 0m-4 0a2 2 0 014 0m9 0a2 2 0 11-4 0m4 0a2 2 0 10-4 0" />
+                </svg>
+            </div>
+            <h3 class="mt-4 text-base font-semibold text-gray-900">No deliveries yet</h3>
+            <p class="mt-1 text-sm text-gray-600">Customer delivery requests will appear here.</p>
+        </div>
+    }
+    else
+    {
+        <div class="card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-golden-100">
+                    <thead class="bg-golden-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Ref</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Customer</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Item</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-golden-800">Qty</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Location</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-golden-800">Total</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Status</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-golden-800">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-golden-100">
+                        @foreach (var d in Model)
+                        {
+                            var status = d.Status;
+                            var (chipClass, dotClass) = DeliveryStatusStyle(status);
+                            var itemName = d.Inventory?.Name ?? $"Item #{d.InventoryID}";
+                            var unit = string.IsNullOrWhiteSpace(d.Inventory?.Unit) ? "pcs" : d.Inventory!.Unit;
+
+                            <tr class="hover:bg-golden-50/40 transition-colors @DeliveryRowAccent(status)">
+                                <td class="px-4 py-3 text-sm font-mono text-gray-700 whitespace-nowrap">
+                                    #@d.Id.ToString("D6")
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    @(d.User?.UserName ?? "—")
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    <span class="block truncate max-w-[14rem]" title="@itemName">@itemName</span>
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-right whitespace-nowrap">
+                                    @d.Quantity <span class="text-gray-400">@unit</span>
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    <span class="block truncate max-w-[14rem]" title="@d.Location">@d.Location</span>
+                                </td>
+                                <td class="px-4 py-3 text-sm font-medium text-golden-700 text-right whitespace-nowrap">
+                                    KES @d.Amount.ToString("N2")
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center gap-1.5 rounded-full border @chipClass
+                                                 px-2.5 py-0.5 text-xs font-medium whitespace-nowrap">
+                                        <span class="h-1.5 w-1.5 rounded-full @dotClass"></span>
+                                        @status
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-right whitespace-nowrap">
+                                    <div class="inline-flex items-center gap-3">
+                                        <a asp-action="Details" asp-route-id="@d.Id"
+                                           class="text-xs font-medium text-golden-600 hover:text-golden-700 underline-offset-2 hover:underline">
+                                            View
+                                        </a>
+
+                                        @if (status == DeliveryStatus.Pending)
+                                        {
+                                            <form asp-action="Confirm" asp-route-id="@d.Id" method="post" class="inline">
+                                                <button type="submit"
+                                                        class="text-xs font-medium text-green-600 hover:text-green-700 underline-offset-2 hover:underline">
+                                                    Confirm
+                                                </button>
+                                            </form>
+                                        }
+
+                                        @if (status == DeliveryStatus.Confirmed)
+                                        {
+                                            <form asp-action="Dispatch" asp-route-id="@d.Id" method="post" class="inline">
+                                                <button type="submit"
+                                                        class="text-xs font-medium text-blue-600 hover:text-blue-700 underline-offset-2 hover:underline">
+                                                    Dispatch
+                                                </button>
+                                            </form>
+                                        }
+
+                                        @if (status == DeliveryStatus.OutForDelivery)
+                                        {
+                                            <form asp-action="Complete" asp-route-id="@d.Id" method="post" class="inline">
+                                                <button type="submit"
+                                                        class="text-xs font-medium text-blue-600 hover:text-blue-700 underline-offset-2 hover:underline">
+                                                    Delivered
+                                                </button>
+                                            </form>
+                                        }
+
+                                        @if (status == DeliveryStatus.Pending || status == DeliveryStatus.Confirmed)
+                                        {
+                                            <form asp-action="Cancel" asp-route-id="@d.Id" method="post" class="inline"
+                                                  onsubmit="return confirm('Cancel this delivery?');">
+                                                <button type="submit"
+                                                        class="text-xs font-medium text-red-600 hover:text-red-700 underline-offset-2 hover:underline">
+                                                    Cancel
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

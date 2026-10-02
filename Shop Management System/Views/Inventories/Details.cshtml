@@ -1,0 +1,139 @@
+@model Shop_Management_System.Models.Inventory
+@using Shop_Management_System.Extensions
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="max-w-3xl mx-auto">
+    <div class="mb-8">
+        <nav class="text-sm text-gray-500 mb-2">
+            <a asp-action="Index" class="hover:text-golden-600 transition-colors">Inventory</a>
+            <span class="mx-1">/</span>
+            <span class="text-gray-700">Details</span>
+        </nav>
+        <h1 class="text-2xl font-bold text-gray-900">@Model.Name</h1>
+        <p class="mt-1 text-sm text-gray-600">Item details and stock information.</p>
+    </div>
+
+    <div class="card overflow-hidden">
+        <dl class="divide-y divide-golden-100">
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
+                <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.Name)</dt>
+                <dd class="sm:col-span-2 text-sm font-medium text-gray-900">@Html.DisplayFor(model => model.Name)</dd>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
+                <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.Description)</dt>
+                <dd class="sm:col-span-2 text-sm text-gray-900 whitespace-pre-line">@Html.DisplayFor(model => model.Description)</dd>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
+                <dt class="text-sm font-medium text-gray-500">Category</dt>
+                <dd class="sm:col-span-2 text-sm">
+                    @if (!string.IsNullOrWhiteSpace(Model.Categories?.GetDisplayName()))
+                    {
+                        <span class="inline-flex items-center rounded-full bg-golden-50 px-2.5 py-0.5 text-xs font-medium text-golden-700 border border-golden-200">
+                            @Model.Categories.GetDisplayName()
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-gray-400">—</span>
+                    }
+                </dd>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
+                <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.Unit)</dt>
+                <dd class="sm:col-span-2 text-sm">
+                    @if (!string.IsNullOrWhiteSpace(Model.Unit))
+                    {
+                        <span class="inline-flex items-center rounded-full bg-golden-50 px-2.5 py-0.5 text-xs font-medium text-golden-700 border border-golden-200">
+                            @Html.DisplayFor(model => model.Unit)
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-gray-400">—</span>
+                    }
+                </dd>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
+                <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.BestBefore)</dt>
+                <dd class="sm:col-span-2 text-sm text-gray-900">@Html.DisplayFor(model => model.BestBefore)</dd>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
+                <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.Quantity)</dt>
+                <dd class="sm:col-span-2 text-sm text-gray-900">@Html.DisplayFor(model => model.Quantity)</dd>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
+                <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.BuyingPrice)</dt>
+                <dd class="sm:col-span-2 text-sm text-gray-900">@Html.DisplayFor(model => model.BuyingPrice)</dd>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
+                <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.SellingPrice)</dt>
+                <dd class="sm:col-span-2 text-sm font-semibold text-golden-700">@Html.DisplayFor(model => model.SellingPrice)</dd>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
+                <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.Is_Delivarable)</dt>
+                <dd class="sm:col-span-2 text-sm">
+                    @if (Model.Is_Delivarable)
+                    {
+                        <span class="inline-flex items-center gap-1 rounded-full bg-golden-50 px-2.5 py-0.5 text-xs font-medium text-golden-700 border border-golden-200">
+                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7" />
+                            </svg>
+                            Yes
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="inline-flex items-center rounded-full bg-gray-50 px-2.5 py-0.5 text-xs font-medium text-gray-600 border border-gray-200">
+                            No
+                        </span>
+                    }
+                </dd>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
+                <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.DeliveryRadius)</dt>
+                <dd class="sm:col-span-2 text-sm text-gray-900">
+                    @if (!string.IsNullOrWhiteSpace(Model.DeliveryRadius))
+                    {
+                        @Html.DisplayFor(model => model.DeliveryRadius)
+                    }
+                    else
+                    {
+                        <span class="text-gray-400">—</span>
+                    }
+                </dd>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
+                <dt class="text-sm font-medium text-gray-500">Item Image</dt>
+                <dd class="sm:col-span-2 text-sm text-gray-900">
+                    @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+                    {
+                        <img src="@Model.ImagePath" alt="@Model.Name"
+                             class="h-40 w-40 rounded-md object-cover border border-golden-200 shadow-sm" />
+                    }
+                    else
+                    {
+                        <span class="text-gray-400">No image</span>
+                    }
+                </dd>
+            </div>
+        </dl>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 mt-6">
+        <a asp-action="Edit" asp-route-id="@Model?.ID" class="btn-primary w-auto px-6">Edit</a>
+        <a asp-action="Index" class="btn-secondary">Back to List</a>
+    </div>
+</div>

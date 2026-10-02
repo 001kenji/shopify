@@ -1,0 +1,96 @@
+@model Shop_Management_System.Models.Delivery
+@using Shop_Management_System.Models
+@{
+    ViewData["Title"] = "Delete Delivery";
+    var (chipClass, dotClass) = DeliveryStatusStyle(Model.Status);
+}
+
+
+@functions {
+    (string chipClass, string dotClass) DeliveryStatusStyle(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.Pending        => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        DeliveryStatus.Confirmed      => ("bg-green-50 border-green-200 text-green-700",   "bg-green-500"),
+        DeliveryStatus.OutForDelivery => ("bg-blue-50 border-blue-200 text-blue-700",      "bg-blue-500"),
+        DeliveryStatus.Delivered      => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+        DeliveryStatus.Cancelled      => ("bg-red-50 border-red-200 text-red-700",         "bg-red-500"),
+        _                             => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+    };
+
+    string DeliveryRowAccent(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.Pending        => "border-l-4 border-l-yellow-400",
+        DeliveryStatus.Confirmed      => "border-l-4 border-l-green-400",
+        DeliveryStatus.OutForDelivery => "border-l-4 border-l-blue-400",
+        DeliveryStatus.Delivered      => "border-l-4 border-l-gray-300",
+        DeliveryStatus.Cancelled      => "border-l-4 border-l-red-400",
+        _                             => "border-l-4 border-l-gray-300",
+    };
+}
+
+<div class="max-w-2xl mx-auto">
+
+    <nav class="text-sm text-gray-500 mb-4">
+        <a asp-action="Index" class="hover:text-golden-600 transition-colors">Deliveries</a>
+        <span class="mx-1">/</span>
+        <span class="text-gray-700">Delete</span>
+    </nav>
+
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">
+            Delete delivery #@Model.Id.ToString("D6")?
+        </h1>
+    </div>
+
+    <div class="alert-danger mb-6">
+        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 9v3m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+        </svg>
+        <div>
+            <strong>This action cannot be undone.</strong>
+            <p class="mt-1">The delivery record will be permanently removed.</p>
+        </div>
+    </div>
+
+    <div class="card p-6 mb-6 overflow-hidden">
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+            <div>
+                <dt class="text-gray-500">Customer</dt>
+                <dd class="font-medium text-gray-900">@(Model.User?.UserName ?? "—")</dd>
+            </div>
+            <div>
+                <dt class="text-gray-500">Item</dt>
+                <dd class="font-medium text-gray-900">@(Model.Inventory?.Name ?? "—")</dd>
+            </div>
+            <div>
+                <dt class="text-gray-500">Quantity</dt>
+                <dd class="font-medium text-gray-900">@Model.Quantity</dd>
+            </div>
+            <div>
+                <dt class="text-gray-500">Location</dt>
+                <dd class="font-medium text-gray-900">@Model.Location</dd>
+            </div>
+            <div>
+                <dt class="text-gray-500">Total</dt>
+                <dd class="font-bold text-golden-700">KES @Model.Amount.ToString("N2")</dd>
+            </div>
+            <div>
+                <dt class="text-gray-500">Status</dt>
+                <dd>
+                    <span class="inline-flex items-center gap-1.5 rounded-full border @chipClass
+                                 px-2.5 py-0.5 text-xs font-medium whitespace-nowrap">
+                        <span class="h-1.5 w-1.5 rounded-full @dotClass"></span>
+                        @Model.Status
+                    </span>
+                </dd>
+            </div>
+        </dl>
+    </div>
+
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="flex flex-wrap items-center gap-3">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn-danger">Delete permanently</button>
+        <a asp-action="Index" class="btn-secondary">Cancel</a>
+    </form>
+</div>

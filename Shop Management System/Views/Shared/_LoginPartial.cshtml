@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@using Shop_Management_System.Data  
+<ul class="flex flex-col md:flex-row md:items-center md:space-x-3 gap-2">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li>
+            <a asp-area="Identity" asp-page="/Account/Manage/Index"
+               title="Manage"
+               class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-golden-600 hover:bg-golden-50 transition-colors">
+                Hello @User.Identity?.Name!
+            </a>
+        </li>
+        <li>
+            <form asp-area="Identity" asp-page="/Account/Logout"
+                  asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"
+                  class="inline">
+                <button type="submit"
+                        class="w-full md:w-auto px-4 py-2 rounded-md text-sm font-semibold
+                               text-white bg-golden-500 hover:bg-golden-600
+                               focus:outline-none focus:ring-2 focus:ring-golden-400 focus:ring-offset-1
+                               transition-colors">
+                    Logout
+                </button>
+            </form>
+        </li>
+    }
+    else
+    {
+        
+        <li>
+            <a asp-area="Identity" asp-page="/Account/Register"
+               class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-golden-600 hover:bg-golden-50 transition-colors">
+                Register
+            </a>
+        </li>
+        <li>
+            <a asp-area="Identity" asp-page="/Account/Login"
+               class="block px-4 py-2 rounded-md text-sm font-semibold
+                      text-white bg-golden-500 hover:bg-golden-600
+                      focus:outline-none focus:ring-2 focus:ring-golden-400 focus:ring-offset-1
+                      transition-colors">
+                Login
+            </a>
+        </li>
+    }
+</ul>

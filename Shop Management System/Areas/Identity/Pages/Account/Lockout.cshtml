@@ -1,0 +1,16 @@
+@page
+@model LockoutModel
+@{
+    ViewData["Title"] = "Locked out";
+}
+
+<div class="max-w-xl mx-auto text-center py-16">
+    <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50">
+        <svg class="h-7 w-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M16.5 10.5V7a4.5 4.5 0 1 0-9 0v3.5M5 10.5h14a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8.5a1 1 0 0 1 1-1Z" />
+        </svg>
+    </div>
+    <h1 class="mt-4 text-2xl font-bold text-gray-900">@ViewData["Title"]</h1>
+    <p class="mt-2 text-gray-600">This account has been locked out, please try again later.</p>
+</div>

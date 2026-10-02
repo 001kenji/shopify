@@ -1,0 +1,261 @@
+## ===========================================
+## ASP.NET Core / .NET
+## ===========================================
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.log
+*.tlog
+*.vspscc
+*.vssscc
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.svclog
+.vs/
+.vscode/
+.idea/
+*.DotSettings.user
+
+## ===========================================
+## Build results
+## ===========================================
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+build/
+bld/
+[Oo]ut/
+[Ll]ib/
+[Ll]ib64/
+[Ll]ocal[Bb]uild/
+*.dll
+*.exe
+*.pdb
+*.cache
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+## ===========================================
+## NuGet
+## ===========================================
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+packages/
+!packages/build/
+*.nuget.props
+*.nuget.targets
+
+## ===========================================
+## User-specific files
+## ===========================================
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## ===========================================
+## Entity Framework / SQL Server
+## ===========================================
+*.mdf
+*.ldf
+*.ndf
+*.sdf
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+*.bak
+*.sql
+!*.schema.sql        # keep schema files if you version them
+
+## ===========================================
+## Application configuration / secrets
+## ===========================================
+appsettings.Development.json
+appsettings.Local.json
+appsettings.Production.json
+*.secrets.json
+secrets.json
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12
+*.key
+*.pem
+*.cert
+*.crt
+
+## ===========================================
+## User-uploaded media
+## ===========================================
+wwwroot/media/
+wwwroot/uploads/
+wwwroot/images/uploads/
+wwwroot/files/
+!wwwroot/media/.gitkeep
+!wwwroot/uploads/.gitkeep
+
+## ===========================================
+## Node / Tailwind CSS
+## ===========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.npm/
+.yarn/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.eslintcache
+.stylelintcache
+.parcel-cache/
+.next/
+.nuxt/
+.cache/
+dist/
+build/
+*.tsbuildinfo
+
+## ===========================================
+## Tailwind compiled output
+## ===========================================
+## If you compile Tailwind to wwwroot/css/output.css, ignore it.
+## Comment out these lines if you want to version the compiled CSS.
+wwwroot/css/output.css
+wwwroot/css/output.css.map
+wwwroot/css/site.css
+wwwroot/css/site.css.map
+wwwroot/css/tailwind.css
+wwwroot/css/tailwind.css.map
+
+## ===========================================
+## Tests / coverage
+## ===========================================
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+coverage/
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+.lcov/
+
+## ===========================================
+## IDE / editor
+## ===========================================
+.vs/
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+.idea/
+*.swp
+*.swo
+*~
+*.orig
+*.rej
+*.bak
+*.tmp
+*.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+## ===========================================
+## ReSharper / Rider
+## ===========================================
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+.idea/
+
+## ===========================================
+## Windows / OS
+## ===========================================
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.TemporaryItems
+
+## ===========================================
+## Logs / diagnostics
+## ===========================================
+*.log
+*.log.*
+logs/
+log/
+*.trace
+*.etl
+*.etw
+
+## ===========================================
+## Migrations (OPTIONAL)
+## ===========================================
+## Uncomment to ignore EF Core migrations entirely.
+## Usually you WANT to commit migrations, so leave these commented.
+# Migrations/
+# **/Migrations/*

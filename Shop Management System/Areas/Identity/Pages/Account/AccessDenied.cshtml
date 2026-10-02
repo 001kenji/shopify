@@ -1,0 +1,17 @@
+@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Access denied";
+}
+
+<div class="max-w-xl mx-auto text-center py-16">
+    <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50">
+        <svg class="h-7 w-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
+        </svg>
+    </div>
+    <h1 class="mt-4 text-2xl font-bold text-gray-900">@ViewData["Title"]</h1>
+    <p class="mt-2 text-gray-600">You do not have access to this resource.</p>
+    <a asp-page="./Login" class="mt-6 inline-block btn-primary w-auto px-6">Back to login</a>
+</div>

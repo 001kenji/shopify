@@ -1,0 +1,141 @@
+@model IEnumerable<Shop_Management_System.Models.Booking>
+@using Shop_Management_System.Models
+@using Shop_Management_System.Extensions
+@{
+    ViewData["Title"] = "All Bookings";
+
+    // Row accent per status
+    string RowAccent(BookingStatus status) => status switch
+    {
+        BookingStatus.Pending   => "border-l-4 border-l-yellow-400",
+        BookingStatus.Confirmed => "border-l-4 border-l-green-400",
+        BookingStatus.Completed => "border-l-4 border-l-blue-400",
+        BookingStatus.Cancelled => "border-l-4 border-l-red-400",
+        _                       => "border-l-4 border-l-gray-300",
+    };
+
+    (string chipClass, string dotClass) StatusStyle(BookingStatus status) => status switch
+    {
+        BookingStatus.Pending   => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        BookingStatus.Confirmed => ("bg-green-50 border-green-200 text-green-700",   "bg-green-500"),
+        BookingStatus.Completed => ("bg-blue-50 border-blue-200 text-blue-700",      "bg-blue-500"),
+        BookingStatus.Cancelled => ("bg-red-50 border-red-200 text-red-700",         "bg-red-500"),
+        _                       => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+    };
+}
+
+<div class="max-w-7xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">All Bookings</h1>
+        <p class="mt-1 text-sm text-gray-600">Manage customer bookings and their statuses.</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="card p-12 text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-golden-50">
+                <svg class="h-6 w-6 text-golden-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9
+                             5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+            </div>
+            <h3 class="mt-4 text-base font-semibold text-gray-900">No bookings yet</h3>
+            <p class="mt-1 text-sm text-gray-600">Customer bookings will appear here.</p>
+        </div>
+    }
+    else
+    {
+        <div class="card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-golden-100">
+                    <thead class="bg-golden-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Ref</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Customer</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Item</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-golden-800">Qty</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Pickup</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Status</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-golden-800">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-golden-100">
+                        @foreach (var b in Model)
+                        {
+                            var status = b.Status;
+                            var (chipClass, dotClass) = StatusStyle(status);
+                            var itemName = b.Inventory?.Name ?? $"Item #{b.InventoryID}";
+                            var unit = string.IsNullOrWhiteSpace(b.Inventory?.Unit) ? "pcs" : b.Inventory!.Unit;
+
+                            <tr class="hover:bg-golden-50/40 transition-colors @RowAccent(status)">
+                                <td class="px-4 py-3 text-sm font-mono text-gray-700 whitespace-nowrap">
+                                    #@b.Id.ToString("D6")
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    @(b.User?.UserName ?? "—")
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    <span class="block truncate max-w-[14rem]" title="@itemName">@itemName</span>
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-right whitespace-nowrap">
+                                    @b.Quantity <span class="text-gray-400">@unit</span>
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                                    @b.PickingDuration.ToString("dd MMM yyyy")
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center gap-1.5 rounded-full border @chipClass
+                                                 px-2.5 py-0.5 text-xs font-medium whitespace-nowrap">
+                                        <span class="h-1.5 w-1.5 rounded-full @dotClass"></span>
+                                        @status
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-right whitespace-nowrap">
+                                    <div class="inline-flex items-center gap-3">
+                                        <a asp-action="Details" asp-route-id="@b.Id"
+                                           class="text-xs font-medium text-golden-600 hover:text-golden-700 underline-offset-2 hover:underline">
+                                            View
+                                        </a>
+
+                                        @if (status == BookingStatus.Pending &&  User.IsInRole("Admin"))
+                                        {
+                                            <form asp-action="Confirm" asp-route-id="@b.Id" method="post" class="inline">
+                                                <button type="submit"
+                                                        class="text-xs font-medium text-green-600 hover:text-green-700 underline-offset-2 hover:underline">
+                                                    Confirm
+                                                </button>
+                                            </form>
+                                        }
+
+                                        @if (status == BookingStatus.Confirmed &&  User.IsInRole("Admin"))
+                                        {
+                                            <form asp-action="Complete" asp-route-id="@b.Id" method="post" class="inline">
+                                                <button type="submit"
+                                                        class="text-xs font-medium text-blue-600 hover:text-blue-700 underline-offset-2 hover:underline">
+                                                    Complete
+                                                </button>
+                                            </form>
+                                        }
+
+                                        @if (status == BookingStatus.Pending || status == BookingStatus.Confirmed)
+                                        {
+                                            <form asp-action="Cancel" asp-route-id="@b.Id" method="post"
+                                                  class="inline"
+                                                  onsubmit="return confirm('Cancel this booking?');">
+                                                <button type="submit"
+                                                        class="text-xs font-medium text-red-600 hover:text-red-700 underline-offset-2 hover:underline">
+                                                    Cancel
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,193 @@
+﻿@model Shop_Management_System.Models.Booking
+@using Shop_Management_System.Models
+@using Shop_Management_System.Extensions
+@{
+    ViewData["Title"] = "Booking Confirmed";
+
+    var inventory = Model.Inventory;
+    var unit = string.IsNullOrWhiteSpace(inventory?.Unit) ? "pcs" : inventory!.Unit;
+    var unitPrice = inventory?.SellingPrice ?? 0;
+    var lineTotal = unitPrice * Model.Quantity;
+    var reference = $"#{Model.Id:D6}";
+    var isPending = Model.Status == BookingStatus.Pending;
+
+    var (badgeClass, badgeText) = Model.Status switch
+    {
+        BookingStatus.Pending   => ("bg-yellow-50 border-yellow-200 text-yellow-700", "Pending"),
+        BookingStatus.Confirmed => ("bg-green-50 border-green-200 text-green-700",   "Confirmed"),
+        BookingStatus.Completed => ("bg-blue-50 border-blue-200 text-blue-700",      "Completed"),
+        BookingStatus.Cancelled => ("bg-red-50 border-red-200 text-red-700",         "Cancelled"),
+        _                       => ("bg-gray-50 border-gray-200 text-gray-700",      Model.Status.ToString())
+    };
+
+    var headerTitle = isPending ? "Booking received" : "Booking confirmed";
+    var headerText = isPending
+        ? "We'll confirm your booking shortly. You'll receive an update once it's approved."
+        : "Your item has been reserved. Please collect it at the time shown below.";
+
+    var bannerBg     = isPending ? "bg-yellow-50 border-yellow-200" : "bg-green-50 border-green-200";
+    var bannerIcon   = isPending ? "text-yellow-600" : "text-green-600";
+    var bannerPath   = isPending
+        ? "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+        : "M5 13l4 4L19 7";
+}
+
+<div class="max-w-2xl mx-auto">
+
+    <!-- Success / pending banner -->
+    <div class="mb-8 text-center">
+        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full border @bannerBg">
+            <svg class="h-8 w-8 @bannerIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="@bannerPath" />
+            </svg>
+        </div>
+        <h1 class="mt-4 text-2xl font-bold text-gray-900">@headerTitle</h1>
+        <p class="mt-1 text-sm text-gray-600">@headerText</p>
+    </div>
+
+    <!-- Booking card -->
+    <div class="card p-6 sm:p-8">
+
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-semibold text-gray-900">Booking details</h2>
+            <span class="inline-block rounded-full border @badgeClass
+                         px-3 py-0.5 text-xs font-medium whitespace-nowrap">
+                @badgeText
+            </span>
+        </div>
+
+        <!-- Item -->
+        <div class="flex gap-4 pb-6 border-b border-golden-100">
+            @if (!string.IsNullOrEmpty(inventory?.ImagePath))
+            {
+                <img src="@inventory.ImagePath" alt="@inventory.Name"
+                     class="h-20 w-20 shrink-0 rounded-md object-cover border border-golden-100" />
+            }
+            else
+            {
+                <div class="h-20 w-20 shrink-0 rounded-md bg-golden-50 border border-golden-100
+                            flex items-center justify-center text-golden-300">
+                    <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0
+                                 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2
+                                 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+            }
+
+            <div class="flex-1 min-w-0">
+                <p class="font-semibold text-gray-900 truncate">
+                    @(inventory?.Name ?? $"Item #{Model.InventoryID}")
+                </p>
+
+                @if (inventory?.Categories != null)
+                {
+                    <p class="text-xs text-gray-500 mt-0.5">
+                        @inventory.Categories.Value.GetDisplayName()
+                    </p>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(inventory?.Description))
+                {
+                    <p class="mt-2 text-sm text-gray-600 line-clamp-2">
+                        @inventory.Description
+                    </p>
+                }
+            </div>
+
+            <div class="text-right shrink-0">
+                <p class="text-xs text-gray-500">Total</p>
+                <p class="text-lg font-bold text-golden-700 whitespace-nowrap">
+                    KES @lineTotal.ToString("N2")
+                </p>
+                @if (Model.Quantity > 1 && unitPrice > 0)
+                {
+                    <p class="text-xs text-gray-400 mt-0.5 whitespace-nowrap">
+                        @Model.Quantity × KES @unitPrice.ToString("N2")
+                    </p>
+                }
+            </div>
+        </div>
+
+        <!-- Key facts -->
+        <dl class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+            <div>
+                <dt class="text-gray-500">Booking reference</dt>
+                <dd class="font-mono font-medium text-gray-900">@reference</dd>
+            </div>
+
+            <div>
+                <dt class="text-gray-500">Date booked</dt>
+                <dd class="font-medium text-gray-900">
+                    @Model.DateOrdered.ToString("dd MMM yyyy, HH:mm")
+                </dd>
+            </div>
+
+            <div>
+                <dt class="text-gray-500">Quantity</dt>
+                <dd class="font-medium text-gray-900">@Model.Quantity @unit</dd>
+            </div>
+
+            <div>
+                <dt class="text-gray-500">Pickup time</dt>
+                <dd class="font-medium text-golden-700">
+                    @Model.PickingDuration.ToString("dd MMM yyyy, HH:mm")
+                </dd>
+            </div>
+        </dl>
+
+        <!-- Info note -->
+        @if (isPending)
+        {
+            <div class="mt-6 alert-warning">
+                <svg class="h-5 w-5 shrink-0 text-golden-600 mt-0.5" fill="none"
+                     stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                    <p class="font-medium">Awaiting confirmation</p>
+                    <p class="mt-1">
+                        Keep reference <span class="font-mono font-semibold">@reference</span> handy.
+                        We'll notify you as soon as your booking is approved.
+                    </p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="mt-6 alert-info">
+                <svg class="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none"
+                     stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                    <p class="font-medium">Please arrive on time</p>
+                    <p class="mt-1">
+                        Bring reference <span class="font-mono font-semibold">@reference</span> with you.
+                        If you can't make it, contact the shop to reschedule.
+                    </p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-6 flex flex-wrap items-center gap-3">
+        <a asp-controller="Shop" asp-action="Index" class="btn-primary w-auto px-6">
+            Continue shopping
+        </a>
+        <a asp-controller="Bookings" asp-action="MyBookings" class="btn-secondary">
+            My bookings
+        </a>
+        <a asp-action="Confirmation"
+           asp-route-id="@Model.Id"
+           target="_blank"
+           class="sm:ml-auto text-sm link-golden">
+            Print receipt
+        </a>
+    </div>
+
+</div>
