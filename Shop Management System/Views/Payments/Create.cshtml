@@ -1,0 +1,114 @@
+@model Shop_Management_System.Models.Payment
+@using Shop_Management_System.Models
+@using Shop_Management_System.Extensions
+@{
+    ViewData["Title"] = "Make Payment";
+
+    var inventoryName = ViewData["InventoryName"]?.ToString();
+    var price = ViewData["InventoryPrice"];
+    var requestedQuantity = ViewData["RequestedQuantity"];
+    var units = ViewData["Units"];
+    var total = ViewData["Total"];
+    var serviceScope = ViewData["Service"] as ServiceType?;
+    var selectedMethod = ViewData["SelectedCategory"] as MethodTypes?;
+
+    var isBooking = serviceScope == ServiceType.BOOK;
+    var scopeLabel = isBooking ? "Bookings" : "Deliveries";
+    var scopeController = isBooking ? "Bookings" : "Deliveries";
+    var scopeAction = isBooking ? "MyBookings" : "MyDeliveries";
+
+    var headingAction = isBooking ? "Pay for" : "Pay for";
+    var headingDesc = isBooking
+        ? "Pay to reserve this item for pickup at your convenience."
+        : "Pay to have this item delivered to your location.";
+}
+
+<div class="max-w-2xl mx-auto py-12">
+
+    <!-- Header -->
+    <div class="mb-8">
+        <nav class="text-sm text-gray-500 mb-2">
+            <a asp-controller="@scopeController" asp-action="@scopeAction"
+               class="hover:text-golden-600 transition-colors">@scopeLabel</a>
+            <span class="mx-1">/</span>
+            <span class="text-gray-700">Pay</span>
+        </nav>
+        <h1 class="text-2xl font-bold text-gray-900">
+            @headingAction @(string.IsNullOrWhiteSpace(inventoryName) ? "this item" : inventoryName)
+        </h1>
+        <p class="mt-1 text-sm text-gray-600">@headingDesc</p>
+    </div>
+
+    <!-- Item summary -->
+    @if (!string.IsNullOrWhiteSpace(inventoryName) || total != null)
+    {
+        <div class="card p-6 mb-6">
+            <h2 class="text-xs font-semibold text-gray-900 uppercase tracking-wide mb-3">Order Summary</h2>
+            <dl class="grid grid-cols-[140px_1fr] gap-x-4 gap-y-3 text-sm">
+                @if (!string.IsNullOrWhiteSpace(inventoryName))
+                {
+                    <dt class="text-gray-500">Item</dt>
+                    <dd class="font-medium text-gray-900">@inventoryName</dd>
+                }
+
+                @if (requestedQuantity != null)
+                {
+                    <dt class="text-gray-500">Quantity</dt>
+                    <dd class="font-medium text-gray-900">@requestedQuantity @units</dd>
+                }
+
+                @if (price != null)
+                {
+                    <dt class="text-gray-500">Unit price</dt>
+                    <dd class="text-gray-900">KES @price</dd>
+                }
+            </dl>
+
+            @if (total != null)
+            {
+                <div class="mt-4 pt-4 border-t border-golden-100 flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Total due</span>
+                    <span class="text-lg font-bold text-golden-700">KES @total</span>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Payment form -->
+    <div class="card p-6 sm:p-8">
+        <form asp-action="Create" method="post" class="space-y-5">
+            <div asp-validation-summary="All" class="text-sm text-red-600" role="alert"></div>
+
+            <input type="hidden" asp-for="BookingID" />
+            <input type="hidden" asp-for="DeliveryId" />
+            <input type="hidden" asp-for="Service" />
+            <input type="hidden" asp-for="Amount" />
+            <input type="hidden" asp-for="Quantity" />
+
+            <div>
+                <label for="PaymentMethod" class="form-label">Payment method</label>
+                <select id="PaymentMethod" name="PaymentMethod" class="form-input" required>
+                    <option value="">-- Select a payment method --</option>
+                    @foreach (var c in Enum.GetValues<MethodTypes>())
+                    {
+                        var selected = selectedMethod == c;
+                        <option value="@c" selected="@selected">@c.GetDisplayName()</option>
+                    }
+                </select>
+                <span asp-validation-for="PaymentMethod" class="mt-1 block text-xs text-red-600"></span>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2 border-t border-golden-100">
+                <button type="submit" class="btn-primary w-auto px-6">
+                    Pay @(total != null ? $"KES {total}" : "")
+                </button>
+                <a asp-controller="@scopeController" asp-action="@scopeAction"
+                   class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

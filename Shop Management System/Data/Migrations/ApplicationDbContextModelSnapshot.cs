@@ -290,6 +290,9 @@ namespace Shop_Management_System.Data.Migrations
                     b.Property<decimal>("DeliveryCost")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("DeliveryPersonNo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("InventoryID")
                         .HasColumnType("int");
 
@@ -370,6 +373,266 @@ namespace Shop_Management_System.Data.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Inventory");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            BestBefore = new DateTime(2028, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BuyingPrice = 85.00m,
+                            Categories = 2,
+                            DeliveryRadius = "50 km",
+                            Description = "Over-ear Bluetooth headphones with active noise cancellation, 30-hour battery life, and built-in microphone.",
+                            ImagePath = "/images/headphones.jpg",
+                            Is_Delivarable = true,
+                            Name = "Wireless Noise-Cancelling Headphones",
+                            Quantity = 45,
+                            SellingPrice = 149.99m,
+                            Unit = "pcs"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            BestBefore = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BuyingPrice = 8.50m,
+                            Categories = 0,
+                            DeliveryRadius = "15 km",
+                            Description = "Premium medium-roast whole coffee beans sourced from sustainable farms. Rich chocolate and caramel notes.",
+                            ImagePath = "/images/coffee.jpg",
+                            Is_Delivarable = true,
+                            Name = "Organic Arabica Coffee Beans",
+                            Quantity = 120,
+                            SellingPrice = 18.99m,
+                            Unit = "kg"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            BestBefore = new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BuyingPrice = 45.00m,
+                            Categories = 1,
+                            DeliveryRadius = "30 km",
+                            Description = "10-piece induction-ready cookware set with heat-resistant handles and tempered glass lids.",
+                            ImagePath = "/images/cookware.jpg",
+                            Is_Delivarable = true,
+                            Name = "Stainless Steel Cookware Set",
+                            Quantity = 20,
+                            SellingPrice = 89.99m,
+                            Unit = "set"
+                        },
+                        new
+                        {
+                            ID = 4,
+                            BestBefore = new DateTime(2035, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BuyingPrice = 25.00m,
+                            Categories = 13,
+                            DeliveryRadius = "25 km",
+                            Description = "100% cotton medium-wash denim jacket. Features button closure, chest pockets, and adjustable waist tabs.",
+                            ImagePath = "/images/denim-jacket.jpg",
+                            Is_Delivarable = true,
+                            Name = "Men's Classic Denim Jacket",
+                            Quantity = 35,
+                            SellingPrice = 59.99m,
+                            Unit = "pcs"
+                        },
+                        new
+                        {
+                            ID = 5,
+                            BestBefore = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BuyingPrice = 12.00m,
+                            Categories = 11,
+                            DeliveryRadius = "0 km",
+                            Description = "Brightening facial serum with 15% Vitamin C, Hyaluronic Acid, and Vitamin E. 30ml bottle.",
+                            ImagePath = "/images/serum.jpg",
+                            Is_Delivarable = false,
+                            Name = "Vitamin C Facial Serum",
+                            Quantity = 80,
+                            SellingPrice = 24.50m,
+                            Unit = "ml"
+                        },
+                        new
+                        {
+                            ID = 6,
+                            BestBefore = new DateTime(2032, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BuyingPrice = 15.00m,
+                            Categories = 12,
+                            DeliveryRadius = "100 km",
+                            Description = "Rechargeable wireless mouse with adjustable DPI (800-2400), silent clicks, and ergonomic thumb rest.",
+                            ImagePath = "/images/mouse.jpg",
+                            Is_Delivarable = true,
+                            Name = "Ergonomic Wireless Mouse",
+                            Quantity = 150,
+                            SellingPrice = 34.99m,
+                            Unit = "pcs"
+                        },
+                        new
+                        {
+                            ID = 7,
+                            BestBefore = new DateTime(2040, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BuyingPrice = 10.00m,
+                            Categories = 5,
+                            DeliveryRadius = "40 km",
+                            Description = "Double-wall vacuum insulated stainless steel bottle. Keeps drinks cold for 24 hours or hot for 12 hours.",
+                            ImagePath = "/images/water-bottle.jpg",
+                            Is_Delivarable = true,
+                            Name = "Insulated Water Bottle (1L)",
+                            Quantity = 200,
+                            SellingPrice = 22.00m,
+                            Unit = "L"
+                        },
+                        new
+                        {
+                            ID = 8,
+                            BestBefore = new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BuyingPrice = 5.00m,
+                            Categories = 6,
+                            DeliveryRadius = "20 km",
+                            Description = "Landscape themed high-quality cardboard puzzle. Recommended for ages 12 and up.",
+                            ImagePath = "/images/puzzle.jpg",
+                            Is_Delivarable = true,
+                            Name = "1000-Piece Jigsaw Puzzle",
+                            Quantity = 60,
+                            SellingPrice = 15.99m,
+                            Unit = "pack"
+                        },
+                        new
+                        {
+                            ID = 9,
+                            BestBefore = new DateTime(2035, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BuyingPrice = 4.50m,
+                            Categories = 3,
+                            DeliveryRadius = "25 km",
+                            Description = "A5 hardcover notebook with PU leather finish, 120gsm dotted paper, and an elastic closure strap.",
+                            ImagePath = "/images/notebook.jpg",
+                            Is_Delivarable = true,
+                            Name = "Executive Leather Notebook",
+                            Quantity = 95,
+                            SellingPrice = 12.00m,
+                            Unit = "pcs"
+                        },
+                        new
+                        {
+                            ID = 10,
+                            BestBefore = new DateTime(2035, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BuyingPrice = 20.00m,
+                            Categories = 15,
+                            DeliveryRadius = "30 km",
+                            Description = "Fits up to 15.6-inch laptops. Features USB charging port, anti-theft pocket, and water-resistant fabric.",
+                            ImagePath = "/images/backpack.jpg",
+                            Is_Delivarable = true,
+                            Name = "Water-Resistant Laptop Backpack",
+                            Quantity = 40,
+                            SellingPrice = 49.99m,
+                            Unit = "pcs"
+                        });
+                });
+
+            modelBuilder.Entity("Shop_Management_System.Models.Likes", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("ReviewId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("ReviewId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Likes");
+                });
+
+            modelBuilder.Entity("Shop_Management_System.Models.Payment", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("BookingID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DeliveryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ItemName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Service")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("BookingID");
+
+                    b.HasIndex("DeliveryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Payment");
+                });
+
+            modelBuilder.Entity("Shop_Management_System.Models.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("InventoryID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PostedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Ratings")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Service")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InventoryID");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -461,11 +724,78 @@ namespace Shop_Management_System.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Shop_Management_System.Models.Likes", b =>
+                {
+                    b.HasOne("Shop_Management_System.Models.Review", "Review")
+                        .WithMany("likes")
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shop_Management_System.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Review");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Shop_Management_System.Models.Payment", b =>
+                {
+                    b.HasOne("Shop_Management_System.Models.Booking", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Shop_Management_System.Models.Delivery", "Delivery")
+                        .WithMany()
+                        .HasForeignKey("DeliveryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Shop_Management_System.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Delivery");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Shop_Management_System.Models.Review", b =>
+                {
+                    b.HasOne("Shop_Management_System.Models.Inventory", "Inventory")
+                        .WithMany()
+                        .HasForeignKey("InventoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shop_Management_System.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Inventory");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Shop_Management_System.Models.Inventory", b =>
                 {
                     b.Navigation("Bookings");
 
                     b.Navigation("Deliveries");
+                });
+
+            modelBuilder.Entity("Shop_Management_System.Models.Review", b =>
+                {
+                    b.Navigation("likes");
                 });
 #pragma warning restore 612, 618
         }

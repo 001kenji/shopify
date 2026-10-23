@@ -96,5 +96,5 @@ using (var scope = app.Services.CreateScope())
 app.Run();
 
 
-//install - package Microsoft.Owin.Host.SystemWeb –Pre
+
 //dotnet add package Microsoft.AspNetCore.Authentication.Google

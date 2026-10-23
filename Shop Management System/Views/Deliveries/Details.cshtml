@@ -10,7 +10,8 @@
 @functions {
     (string chipClass, string dotClass) DeliveryStatusStyle(DeliveryStatus status) => status switch
     {
-        DeliveryStatus.Pending        => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        DeliveryStatus.PendingPayment        => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        DeliveryStatus.PendingConfimation        => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
         DeliveryStatus.Confirmed      => ("bg-green-50 border-green-200 text-green-700",   "bg-green-500"),
         DeliveryStatus.OutForDelivery => ("bg-blue-50 border-blue-200 text-blue-700",      "bg-blue-500"),
         DeliveryStatus.Delivered      => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
@@ -20,7 +21,8 @@
 
     string DeliveryRowAccent(DeliveryStatus status) => status switch
     {
-        DeliveryStatus.Pending        => "border-l-4 border-l-yellow-400",
+        DeliveryStatus.PendingPayment        => "border-l-4 border-l-yellow-400",
+        DeliveryStatus.PendingConfimation        => "border-l-4 border-l-yellow-400",
         DeliveryStatus.Confirmed      => "border-l-4 border-l-green-400",
         DeliveryStatus.OutForDelivery => "border-l-4 border-l-blue-400",
         DeliveryStatus.Delivered      => "border-l-4 border-l-gray-300",
@@ -92,8 +94,23 @@
                 <dd class="font-bold text-golden-700">KES @Model.Amount.ToString("N2")</dd>
             </div>
             <div>
+                <dt class="text-gray-500">Delivery Person Number</dt>
+                @if (!string.IsNullOrWhiteSpace(Model.DeliveryPersonNo))
+                {
+                    <dd class="font-medium text-gray-900">@Model.DeliveryPersonNo</dd>
+                }
+                else
+                {
+                    <dd class="text-xs italic text-gray-400">Available before dispatch</dd>
+                }
+            </div>
+            <div>
                 <dt class="text-gray-500">Customer</dt>
-                <dd class="font-medium text-gray-900">@(Model.User?.UserName ?? "—")</dd>
+                <dd class="font-medium text-gray-900">@(Model.User?.Email ?? "—")</dd>
+            </div>
+            <div>
+                <dt class="text-gray-500">Customer Number</dt>
+                <dd class="font-medium text-gray-900">@(Model.User?.PhoneNumber ?? "—")</dd>
             </div>
         </dl>
 
@@ -112,16 +129,26 @@
         }
 
         <div class="mt-8 pt-6 border-t border-golden-100 flex flex-wrap gap-3">
-            @if (Model.Status == DeliveryStatus.Pending)
+            @if (Model.Status == DeliveryStatus.PendingPayment)
             {
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-secondary">Edit</a>
+                @if(User.IsInRole("Admin"))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-secondary">Edit</a>
+                }                
 
                 <form asp-action="Cancel" asp-route-id="@Model.Id" method="post" class="inline"
                       onsubmit="return confirm('Cancel this delivery?');">
                     <button type="submit" class="btn-danger">Cancel delivery</button>
                 </form>
             }
-            <a asp-action="MyDeliveries" class="btn-secondary">Back to list</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Index" class="btn-secondary">Back to list</a>
+            }
+            else
+            {
+                <a asp-action="MyDeliveries" class="btn-secondary">Back to list</a>
+            }
         </div>
     </div>
 </div>

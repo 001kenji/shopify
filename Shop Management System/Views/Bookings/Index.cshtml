@@ -1,13 +1,16 @@
 @model IEnumerable<Shop_Management_System.Models.Booking>
 @using Shop_Management_System.Models
 @using Shop_Management_System.Extensions
+@using System.Security.Claims
 @{
     ViewData["Title"] = "All Bookings";
-
+    var currentEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+    
     // Row accent per status
     string RowAccent(BookingStatus status) => status switch
     {
-        BookingStatus.Pending   => "border-l-4 border-l-yellow-400",
+        BookingStatus.PendingPayment   => "border-l-4 border-l-yellow-400",
+        BookingStatus.PendingConfirmation   => "border-l-4 border-l-yellow-400",
         BookingStatus.Confirmed => "border-l-4 border-l-green-400",
         BookingStatus.Completed => "border-l-4 border-l-blue-400",
         BookingStatus.Cancelled => "border-l-4 border-l-red-400",
@@ -16,7 +19,8 @@
 
     (string chipClass, string dotClass) StatusStyle(BookingStatus status) => status switch
     {
-        BookingStatus.Pending   => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        BookingStatus.PendingPayment   => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        BookingStatus.PendingConfirmation   => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
         BookingStatus.Confirmed => ("bg-green-50 border-green-200 text-green-700",   "bg-green-500"),
         BookingStatus.Completed => ("bg-blue-50 border-blue-200 text-blue-700",      "bg-blue-500"),
         BookingStatus.Cancelled => ("bg-red-50 border-red-200 text-red-700",         "bg-red-500"),
@@ -73,7 +77,16 @@
                                     #@b.Id.ToString("D6")
                                 </td>
                                 <td class="px-4 py-3 text-sm text-gray-700">
-                                    @(b.User?.UserName ?? "—")
+                                    @if (!string.IsNullOrWhiteSpace(b.User?.Email))
+                                    {
+                                        <span>@b.User!.Email</span>
+                                        <span>-</span>
+                                        <span>@b.User.PhoneNumber</span>
+                                    }
+                                    else
+                                    {
+                                        <span>—</span>
+                                    }
                                 </td>
                                 <td class="px-4 py-3 text-sm text-gray-700">
                                     <span class="block truncate max-w-[14rem]" title="@itemName">@itemName</span>
@@ -98,7 +111,33 @@
                                             View
                                         </a>
 
-                                        @if (status == BookingStatus.Pending &&  User.IsInRole("Admin"))
+                                        @if (status == BookingStatus.PendingPayment)
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@b.Id"
+                                               class="text-xs font-medium text-sky-600 hover:text-sky-700 underline-offset-2 hover:underline">
+                                                Edit
+                                            </a>
+                                        }
+
+                                        @if (status == BookingStatus.PendingPayment)
+                                        {
+                                            if(b.User?.Email == currentEmail)
+                                            {
+                                                <a asp-controller="Payments" asp-action="Create"
+                                                   asp-route-Id="@b.Id"
+                                                   asp-route-serviceScope=@ServiceType.BOOK
+                                                   class="text-xs font-medium text-black hover:text-golden-700 underline-offset-2 hover:underline">
+                                                    Pay
+                                                </a>
+                                            }else if (User.IsInRole("Admin"))
+                                            {
+                                                <span class="text-xs text-gray-400 italic" title="Only the customer can pay for this order">
+                                                    Awaiting customer payment
+                                                </span>
+                                            }
+
+                                        }
+                                        @if (status == BookingStatus.PendingConfirmation && User.IsInRole("Admin"))
                                         {
                                             <form asp-action="Confirm" asp-route-id="@b.Id" method="post" class="inline">
                                                 <button type="submit"
@@ -118,7 +157,18 @@
                                             </form>
                                         }
 
-                                        @if (status == BookingStatus.Pending || status == BookingStatus.Confirmed)
+                                        @if (status == BookingStatus.Completed && currentEmail == b.User?.Email)
+                                       
+                                        {
+                                            <a asp-controller="Reviews" asp-action="Create"
+                                                   asp-route-Id="@b.Id"
+                                                   asp-route-serviceScope=@ServiceType.BOOK
+                                                   class="text-xs font-medium text-black hover:text-golden-700 underline-offset-2 hover:underline">
+                                                    Review
+                                                </a>
+                                        }
+
+                                        @if (status == BookingStatus.PendingConfirmation || status == BookingStatus.Confirmed)
                                         {
                                             <form asp-action="Cancel" asp-route-id="@b.Id" method="post"
                                                   class="inline"

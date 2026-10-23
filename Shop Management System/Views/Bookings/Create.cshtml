@@ -5,7 +5,7 @@
     var inventoryName = ViewData["InventoryName"]?.ToString();
     var description = ViewData["Description"]?.ToString();
     var price = ViewData["InventoryPrice"];
-    var availableQty = ViewData["AvailableQuantity"];
+    var availableQty = ViewData["AvailableQuantity"] as int? ?? 0;
     var unit = ViewData["Unit"]?.ToString();
 }
 
@@ -61,7 +61,7 @@
             <div class="grid sm:grid-cols-2 gap-5">
                 <div>
                     <label asp-for="Quantity" class="form-label">Quantity</label>
-                    <input asp-for="Quantity" class="form-input" placeholder="0" />
+                    <input asp-for="Quantity" max="@availableQty" class="form-input" placeholder="0" />
                     <span asp-validation-for="Quantity" class="mt-1 block text-xs text-red-600"></span>
                 </div>
 

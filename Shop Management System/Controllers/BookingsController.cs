@@ -47,6 +47,7 @@ public class BookingsController : Controller
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var bookings = await _context.Booking
                 .Include(b => b.Inventory)
+                .Include(b => b.User)
                 .Where(b => b.UserId == userId)
                 .OrderBy(b => b.Status == BookingStatus.Completed || b.Status == BookingStatus.Cancelled)
                 .OrderByDescending(b => b.DateOrdered)
@@ -114,6 +115,11 @@ public class BookingsController : Controller
             .FirstOrDefaultAsync(i => i.ID == booking.InventoryID);
         if (inventory == null) return NotFound();
 
+        var userref = await _context.Users.FindAsync(userId);
+        if (string.IsNullOrWhiteSpace(userref.PhoneNumber))
+         {
+            ModelState.AddModelError("", "Set your phone number in profile to proceed.");
+        }
         // 3) Validate stock server-side
         if (booking.Quantity > inventory.Quantity)
         {
@@ -125,7 +131,7 @@ public class BookingsController : Controller
         booking.UserId = userId;
         booking.DateOrdered = DateTime.UtcNow;
         booking.Inventory = inventory;   // EF will link the FK anyway, but this helps if you want the entity
-        booking.Status = BookingStatus.Pending;
+        booking.Status = BookingStatus.PendingPayment;
         ModelState.Remove("UserId");
         ModelState.Remove("Inventory");
         ModelState.Remove("DateOrdered");
@@ -137,8 +143,7 @@ public class BookingsController : Controller
                 booking.User = await _context.Users.FindAsync(userId);
                 _context.Add(booking);
 
-                // 5) Optionally reserve/decrement stock here
-                inventory.Quantity -= booking.Quantity;
+                
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Confirmation), new { id = booking.Id });
@@ -271,7 +276,7 @@ public class BookingsController : Controller
         var booking = await _context.Booking.FindAsync(id);
         if (booking == null) return NotFound();
 
-        if (booking.Status != BookingStatus.Pending)
+        if (booking.Status != BookingStatus.PendingConfirmation)
             return BadRequest("Only pending bookings can be confirmed.");
 
         booking.Status = BookingStatus.Confirmed;
@@ -317,14 +322,18 @@ public class BookingsController : Controller
 
         if (booking == null) return NotFound();
 
-        if (booking.Status != BookingStatus.Pending && booking.Status != BookingStatus.Confirmed)
+        if (booking.Status != BookingStatus.PendingPayment && booking.Status != BookingStatus.PendingConfirmation && booking.Status != BookingStatus.Confirmed)
             return BadRequest("This booking can no longer be cancelled.");
 
+        if(booking.Status != BookingStatus.PendingPayment)
+        {
+            // Restore inventory stock since user had already paid for it 
+            if (booking.Inventory != null)
+                booking.Inventory.Quantity += booking.Quantity;
+        }
         booking.Status = BookingStatus.Cancelled;
 
-        // Restore inventory stock
-        if (booking.Inventory != null)
-            booking.Inventory.Quantity += booking.Quantity;
+        
 
         await _context.SaveChangesAsync();
 

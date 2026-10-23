@@ -53,19 +53,26 @@ namespace Shop_Management_System.Models
         public DateTime DateRequested { get; set; } = DateTime.UtcNow;
 
         [Display(Name = "Status")]
-        public DeliveryStatus Status { get; set; } = DeliveryStatus.Pending;
+        public DeliveryStatus Status { get; set; } = DeliveryStatus.PendingPayment;
 
         [StringLength(500)]
         [Display(Name = "Admin Notes")]
         public string? AdminNotes { get; set; }
+
+        [Display(Name ="Delivery Person Phone Number")]
+        public string? DeliveryPersonNo { get; set; }
     }
 
     public enum DeliveryStatus
     {
-        [Display(Name = "Pending")] Pending = 0,
-        [Display(Name = "Confirmed")] Confirmed = 1,
-        [Display(Name = "Out for Delivery")] OutForDelivery = 2,
-        [Display(Name = "Delivered")] Delivered = 3,
-        [Display(Name = "Cancelled")] Cancelled = 4
+        [Display(Name = "Pending Payment")] PendingPayment = 0,
+
+        [Display(Name = "Pending Confimation")] PendingConfimation = 1,
+        [Display(Name = "Confirmed")] Confirmed = 2,
+        [Display(Name = "Out for Delivery")] OutForDelivery = 3,
+        [Display(Name = "Delivered")] Delivered = 4,
+        [Display(Name = "Reviewed")]Reviewed = 5,
+        [Display(Name = "Cancelled")] Cancelled = 6,
+        
     }
 }

@@ -1,0 +1,171 @@
+@model IEnumerable<Shop_Management_System.Models.Review>
+@using Shop_Management_System.Models
+@using Shop_Management_System.Extensions
+@using System.Security.Claims
+@{
+    ViewData["Title"] = "Reviews";
+    var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+    var currentUserId = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
+    
+}
+
+<div class="max-w-7xl mx-auto py-8">
+
+    <!-- Header -->
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Reviews</h1>
+            <p class="mt-1 text-sm text-gray-600">See what customers are saying.</p>
+        </div>
+        @if (isAuthenticated)
+        {
+            <a asp-action="Create" class="btn-primary w-auto px-5 w-fit">
+                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Write a review
+            </a>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="card p-12 text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-golden-50">
+                <svg class="h-6 w-6 text-golden-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5Z" />
+                </svg>
+            </div>
+            <h3 class="mt-4 text-base font-semibold text-gray-900">No reviews yet</h3>
+            <p class="mt-1 text-sm text-gray-600">
+                @if (isAuthenticated)
+                {
+                    <span>Be the first to share your experience.</span>
+                }
+                else
+                {
+                    <span>Reviews will appear here once customers start sharing.</span>
+                }
+            </p>
+            @if (isAuthenticated)
+            {
+                <a asp-action="Create" class="btn-primary w-auto px-6 mt-6 inline-flex">Write a review</a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-golden-100">
+                    <thead class="bg-golden-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Item</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Customer</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Review</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Rating</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Posted</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-golden-800">Likes</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-golden-800">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-golden-100 bg-white">
+                        @foreach (var item in Model)
+                        {
+                            <tr class="hover:bg-golden-50/50 transition-colors">
+                                <td class="px-4 py-3 text-sm font-medium text-gray-900">
+                                    <span class="block truncate max-w-[14rem]"
+                                          title="@(item.Inventory?.Name ?? $"Item #{item.InventoryID}")">
+                                        @(item.Inventory?.Name ?? $"Item #{item.InventoryID}")
+                                    </span>
+                                </td>
+
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    @{
+                                        // 1. Get the raw string (falls back to "—")
+                                        var rawName = item.User?.UserName ?? item.User?.Email ?? "—";
+    
+                                        // 2. Process it ONLY if it's an email containing '@'
+                                        var username = rawName.Contains("@") 
+                                            ? System.Text.RegularExpressions.Regex.Replace(rawName.Split('@')[0], @"[\d]", "") 
+                                            : rawName;
+                                    }
+                                    @(username)
+                                </td>
+
+                                <td class="px-4 py-3 text-sm text-gray-700 max-w-xs">
+                                    <span class="block truncate" title="@item.Details">
+                                        @(string.IsNullOrWhiteSpace(item.Details) ? "—" : item.Details)
+                                    </span>
+                                </td>
+
+                                <td class="px-4 py-3 text-sm">
+                                    <div class="flex items-center gap-1" title="@item.Ratings.GetDisplayName()">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            var isFilled = (int)item.Ratings >= i;
+                                            <svg class="h-4 w-4 @(isFilled ? "text-golden-400" : "text-gray-200")"
+                                                 fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 0 0 .95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 0 0-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 0 0-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 0 0-.363-1.118L2.027 10.1c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 0 0 .951-.69l1.519-4.673Z" />
+                                            </svg>
+                                        }
+                                    </div>
+                                </td>
+
+                                <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                                    @item.PostedOn.ToString("dd MMM yyyy")
+                                </td>
+
+                                <td class="px-4 py-3 text-sm text-gray-700 text-right whitespace-nowrap">
+                                    @if (item.likes.Count > 0)
+                                    {
+                                        <span class="inline-flex items-center gap-1 text-golden-700 font-medium">
+                                            <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                      d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656Z"
+                                                      clip-rule="evenodd" />
+                                            </svg>
+                                            @item.likes.Count
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-gray-400">0</span>
+                                    }
+                                </td>
+
+                                <td class="px-4 py-3 text-right whitespace-nowrap">
+                                    @{
+                                        // Check if the current user wrote this review
+                                        bool isAuthor = item.User?.Id == currentUserId;
+    
+                                        // Check if the current user has liked this review
+                                        bool hasLiked = item.likes != null && item.likes.Any(e => e.UserId == currentUserId);
+
+                                        if (isAuthor)
+                                        {
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn-secondary-sm">Details</a>
+                                        }
+                                        else if (hasLiked)
+                                        {
+                                            <form asp-action="UnLike" asp-route-Id="@item.Id" method="post">
+                                                <button type="submit" class="btn-secondary-sm">Unlike</button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="Like" asp-route-Id="@item.Id" method="post">
+                                                <button type="submit" class="btn-secondary-sm">Like</button>
+                                            </form>
+                                        }
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

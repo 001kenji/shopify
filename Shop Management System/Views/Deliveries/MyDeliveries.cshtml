@@ -4,7 +4,8 @@
 @functions {
     (string chipClass, string dotClass) DeliveryStatusStyle(DeliveryStatus status) => status switch
     {
-        DeliveryStatus.Pending        => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        DeliveryStatus.PendingPayment        => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        DeliveryStatus.PendingConfimation        => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
         DeliveryStatus.Confirmed      => ("bg-green-50 border-green-200 text-green-700",   "bg-green-500"),
         DeliveryStatus.OutForDelivery => ("bg-blue-50 border-blue-200 text-blue-700",      "bg-blue-500"),
         DeliveryStatus.Delivered      => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
@@ -14,7 +15,8 @@
 
     string DeliveryRowAccent(DeliveryStatus status) => status switch
     {
-        DeliveryStatus.Pending        => "border-l-4 border-l-yellow-400",
+        DeliveryStatus.PendingPayment => "border-l-4 border-l-yellow-400",
+        DeliveryStatus.PendingConfimation => "border-l-4 border-l-yellow-400",
         DeliveryStatus.Confirmed      => "border-l-4 border-l-green-400",
         DeliveryStatus.OutForDelivery => "border-l-4 border-l-blue-400",
         DeliveryStatus.Delivered      => "border-l-4 border-l-gray-300",
@@ -107,9 +109,17 @@
                     <div class="mt-4 flex flex-wrap items-center gap-2">
                         <a asp-action="Details" asp-route-id="@d.Id" class="btn-secondary-sm">View details</a>
 
-                        @if (status == DeliveryStatus.Pending)
+                        @if (status == DeliveryStatus.PendingPayment)
                         {
                             <a asp-action="Edit" asp-route-id="@d.Id" class="btn-secondary-sm">Edit</a>
+
+                            <a asp-controller="Payments"
+                               asp-action="Create"
+                               asp-route-Id="@d.Id"
+                               asp-route-serviceScope="@ServiceType.DELIVER"
+                               class="btn-secondary-sm">
+                                Pay 
+                            </a>
 
                             <form asp-action="Cancel" asp-route-id="@d.Id" method="post" class="inline"
                                   onsubmit="return confirm('Cancel this delivery?');">

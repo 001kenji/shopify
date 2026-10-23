@@ -15,7 +15,7 @@ public class ShopController : Controller
         _context = context;
     }
 
-    // GET: INVENTORYS
+    // GET: shop
     public async Task<IActionResult> Index(string? SearchName,CategoriesChoices? category)    
     {
         var query = _context.Inventory
@@ -37,7 +37,7 @@ public class ShopController : Controller
         return View(intentories);
     }
 
-    // GET: INVENTORYS/Details/5
+    // GET: shop/Details/5
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
@@ -45,10 +45,7 @@ public class ShopController : Controller
             return NotFound();
         }
 
-        var inventory = await _context.Inventory
-            .Include(i => i.Bookings)
-            .Include(i => i.Deliveries)
-            .FirstOrDefaultAsync(m => m.ID == id);
+        var inventory = await _context.Inventory.FirstOrDefaultAsync(m => m.ID == id);
         if (inventory == null)
         {
             return NotFound();

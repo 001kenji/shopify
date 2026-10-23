@@ -9,27 +9,74 @@
     var unitPrice = inventory?.SellingPrice ?? 0;
     var lineTotal = unitPrice * Model.Quantity;
     var reference = $"#{Model.Id:D6}";
-    var isPending = Model.Status == BookingStatus.Pending;
+
+    var isPending = Model.Status == BookingStatus.PendingConfirmation
+                 || Model.Status == BookingStatus.PendingPayment;
+
+    var needsPayment = Model.Status == BookingStatus.PendingPayment;
+    var isConfirmed  = Model.Status == BookingStatus.Confirmed;
+    var isCompleted  = Model.Status == BookingStatus.Completed;
+    var isCancelled  = Model.Status == BookingStatus.Cancelled;
 
     var (badgeClass, badgeText) = Model.Status switch
     {
-        BookingStatus.Pending   => ("bg-yellow-50 border-yellow-200 text-yellow-700", "Pending"),
-        BookingStatus.Confirmed => ("bg-green-50 border-green-200 text-green-700",   "Confirmed"),
-        BookingStatus.Completed => ("bg-blue-50 border-blue-200 text-blue-700",      "Completed"),
-        BookingStatus.Cancelled => ("bg-red-50 border-red-200 text-red-700",         "Cancelled"),
-        _                       => ("bg-gray-50 border-gray-200 text-gray-700",      Model.Status.ToString())
+        BookingStatus.PendingPayment      => ("bg-yellow-50 border-yellow-200 text-yellow-700", "Pending payment"),
+        BookingStatus.PendingConfirmation => ("bg-yellow-50 border-yellow-200 text-yellow-700", "Pending confirmation"),
+        BookingStatus.Confirmed           => ("bg-green-50 border-green-200 text-green-700",   "Confirmed"),
+        BookingStatus.Completed           => ("bg-blue-50 border-blue-200 text-blue-700",      "Completed"),
+        BookingStatus.Cancelled           => ("bg-red-50 border-red-200 text-red-700",         "Cancelled"),
+        _                                 => ("bg-gray-50 border-gray-200 text-gray-700",        Model.Status.ToString())
     };
 
-    var headerTitle = isPending ? "Booking received" : "Booking confirmed";
-    var headerText = isPending
-        ? "We'll confirm your booking shortly. You'll receive an update once it's approved."
-        : "Your item has been reserved. Please collect it at the time shown below.";
+    var headerTitle = Model.Status switch
+    {
+        BookingStatus.PendingPayment      => "Booking received",
+        BookingStatus.PendingConfirmation => "Booking received",
+        BookingStatus.Confirmed           => "Booking confirmed",
+        BookingStatus.Completed           => "Booking completed",
+        BookingStatus.Cancelled           => "Booking cancelled",
+        _                                 => "Booking received"
+    };
 
-    var bannerBg     = isPending ? "bg-yellow-50 border-yellow-200" : "bg-green-50 border-green-200";
-    var bannerIcon   = isPending ? "text-yellow-600" : "text-green-600";
-    var bannerPath   = isPending
-        ? "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-        : "M5 13l4 4L19 7";
+    var headerText = Model.Status switch
+    {
+        BookingStatus.PendingPayment      => "Complete payment to finalise your reservation.",
+        BookingStatus.PendingConfirmation => "We'll confirm your booking shortly. You'll receive an update once it's approved.",
+        BookingStatus.Confirmed           => "Your item has been reserved. Please collect it at the time shown below.",
+        BookingStatus.Completed           => "This booking has been collected. Thank you!",
+        BookingStatus.Cancelled           => "This booking was cancelled. You can browse the shop for other items.",
+        _                                 => "We'll confirm your booking shortly."
+    };
+
+    var bannerBg = Model.Status switch
+    {
+        BookingStatus.PendingPayment      => "bg-yellow-50 border-yellow-200",
+        BookingStatus.PendingConfirmation => "bg-yellow-50 border-yellow-200",
+        BookingStatus.Confirmed           => "bg-green-50 border-green-200",
+        BookingStatus.Completed           => "bg-blue-50 border-blue-200",
+        BookingStatus.Cancelled           => "bg-red-50 border-red-200",
+        _                                 => "bg-gray-50 border-gray-200"
+    };
+
+    var bannerIcon = Model.Status switch
+    {
+        BookingStatus.PendingPayment      => "text-yellow-600",
+        BookingStatus.PendingConfirmation => "text-yellow-600",
+        BookingStatus.Confirmed           => "text-green-600",
+        BookingStatus.Completed           => "text-blue-600",
+        BookingStatus.Cancelled           => "text-red-600",
+        _                                 => "text-gray-600"
+    };
+
+    var bannerPath = Model.Status switch
+    {
+        BookingStatus.PendingPayment      => "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+        BookingStatus.PendingConfirmation => "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+        BookingStatus.Confirmed           => "M5 13l4 4L19 7",
+        BookingStatus.Completed           => "M5 13l4 4L19 7",
+        BookingStatus.Cancelled           => "M6 18 18 6M6 6l12 12",
+        _                                 => "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+    };
 }
 
 <div class="max-w-2xl mx-auto">
@@ -138,7 +185,25 @@
         </dl>
 
         <!-- Info note -->
-        @if (isPending)
+        @if (needsPayment)
+        {
+            <div class="mt-6 alert-warning">
+                <svg class="h-5 w-5 shrink-0 text-golden-600 mt-0.5" fill="none"
+                     stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+                <div>
+                    <p class="font-medium">Payment required</p>
+                    <p class="mt-1">
+                        Complete payment for reference
+                        <span class="font-mono font-semibold">@reference</span>
+                        to finalise your booking.
+                    </p>
+                </div>
+            </div>
+        }
+        else if (Model.Status == BookingStatus.PendingConfirmation)
         {
             <div class="mt-6 alert-warning">
                 <svg class="h-5 w-5 shrink-0 text-golden-600 mt-0.5" fill="none"
@@ -155,7 +220,7 @@
                 </div>
             </div>
         }
-        else
+        else if (isConfirmed)
         {
             <div class="mt-6 alert-info">
                 <svg class="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none"
@@ -172,22 +237,68 @@
                 </div>
             </div>
         }
+        else if (isCompleted)
+        {
+            <div class="mt-6 alert-info">
+                <svg class="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none"
+                     stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 12l2 2 4-4M12 21a9 9 0 110-18 9 9 0 010 18z" />
+                </svg>
+                <div>
+                    <p class="font-medium">Thanks for shopping with us</p>
+                    <p class="mt-1">
+                        This booking has been collected. We hope to see you again soon.
+                    </p>
+                </div>
+            </div>
+        }
+        else if (isCancelled)
+        {
+            <div class="mt-6 alert-danger">
+                <svg class="h-5 w-5 shrink-0 mt-0.5" fill="none"
+                     stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 9v3m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+                </svg>
+                <div>
+                    <p class="font-medium">This booking was cancelled</p>
+                    <p class="mt-1">
+                        You can browse the shop to find other items, or contact the shop
+                        if you believe this was a mistake.
+                    </p>
+                </div>
+            </div>
+        }
     </div>
 
     <!-- Actions -->
     <div class="mt-6 flex flex-wrap items-center gap-3">
-        <a asp-controller="Shop" asp-action="Index" class="btn-primary w-auto px-6">
-            Continue shopping
-        </a>
+
+        @if (needsPayment)
+        {
+            <a asp-controller="Payments"
+               asp-action="Create"
+               asp-route-Id="@Model.Id"
+               asp-route-serviceScope="@ServiceType.BOOK"
+               class="btn-primary w-auto px-6">
+                Pay KES @lineTotal.ToString("N2")
+            </a>
+        }
+
         <a asp-controller="Bookings" asp-action="MyBookings" class="btn-secondary">
             My bookings
         </a>
-        <a asp-action="Confirmation"
-           asp-route-id="@Model.Id"
-           target="_blank"
-           class="sm:ml-auto text-sm link-golden">
-            Print receipt
-        </a>
+
+        @if (isConfirmed || isCompleted)
+        {
+            <a asp-action="Confirmation"
+               asp-route-id="@Model.Id"
+               target="_blank"
+               class="sm:ml-auto text-sm link-golden">
+                Print receipt
+            </a>
+        }
     </div>
 
 </div>

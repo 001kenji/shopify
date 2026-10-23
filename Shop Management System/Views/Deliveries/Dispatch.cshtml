@@ -1,0 +1,181 @@
+﻿@model Shop_Management_System.Models.Delivery
+@using Shop_Management_System.Models
+@using Shop_Management_System.Extensions
+@{
+    ViewData["Title"] = $"Delivery #{Model.Id:D6}";
+
+    var isAdmin = User.IsInRole("Admin");
+    var isConfirmed = Model.Status == DeliveryStatus.Confirmed;
+    var showDispatchForm = isAdmin && isConfirmed;
+
+    var (chipClass, dotClass) = DeliveryStatusStyle(Model.Status);
+    var statusLabel = Model.Status.GetDisplayName();
+}
+
+@functions {
+    (string chipClass, string dotClass) DeliveryStatusStyle(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.PendingPayment     => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        DeliveryStatus.PendingConfimation => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        DeliveryStatus.Confirmed          => ("bg-green-50 border-green-200 text-green-700",   "bg-green-500"),
+        DeliveryStatus.OutForDelivery     => ("bg-blue-50 border-blue-200 text-blue-700",      "bg-blue-500"),
+        DeliveryStatus.Delivered          => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+        DeliveryStatus.Cancelled          => ("bg-red-50 border-red-200 text-red-700",         "bg-red-500"),
+        _                                 => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+    };
+}
+
+<div class="max-w-3xl mx-auto">
+
+    <!-- Breadcrumb -->
+    <nav class="text-sm text-gray-500 mb-6">
+        @if (isAdmin)
+        {
+            <a asp-action="Index" class="hover:text-golden-600 transition-colors">Deliveries</a>
+        }
+        else
+        {
+            <a asp-action="MyDeliveries" class="hover:text-golden-600 transition-colors">My deliveries</a>
+        }
+        <span class="mx-1">/</span>
+        <span class="text-gray-700">#@Model.Id.ToString("D6")</span>
+    </nav>
+
+    <div class="card p-6 sm:p-8">
+
+        <!-- Header -->
+        <div class="flex items-start justify-between gap-4 mb-6">
+            <div class="min-w-0">
+                <h1 class="text-xl font-bold text-gray-900">
+                    @(showDispatchForm ? "Dispatch" : "Confirm") Delivery #@Model.Id.ToString("D6")
+                </h1>
+                <p class="mt-1 text-sm text-gray-600">
+                    Requested @Model.DateRequested.ToString("dd MMM yyyy, HH:mm")
+                </p>
+            </div>
+            <span class="inline-flex items-center gap-1.5 rounded-full border @chipClass
+                         px-3 py-0.5 text-xs font-medium whitespace-nowrap">
+                <span class="h-1.5 w-1.5 rounded-full @dotClass"></span>
+                @statusLabel
+            </span>
+        </div>
+
+        <!-- Key facts -->
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+            <div>
+                <dt class="text-gray-500">Item</dt>
+                <dd class="font-medium text-gray-900 truncate"
+                    title="@(Model.Inventory?.Name ?? $"Item #{Model.InventoryID}")">
+                    @(Model.Inventory?.Name ?? $"Item #{Model.InventoryID}")
+                </dd>
+            </div>
+
+            <div>
+                <dt class="text-gray-500">Quantity</dt>
+                <dd class="font-medium text-gray-900">
+                    @Model.Quantity @(string.IsNullOrWhiteSpace(Model.Inventory?.Unit) ? "pcs" : Model.Inventory!.Unit)
+                </dd>
+            </div>
+
+            <div>
+                <dt class="text-gray-500">Location</dt>
+                <dd class="font-medium text-gray-900">@Model.Location</dd>
+            </div>
+
+            <div>
+                <dt class="text-gray-500">Building / Unit</dt>
+                <dd class="font-medium text-gray-900">
+                    @if (string.IsNullOrWhiteSpace(Model.BuildingName) && string.IsNullOrWhiteSpace(Model.UnitName))
+                    {
+                        <span class="text-gray-400">—</span>
+                    }
+                    else
+                    {
+                        @($"{Model.BuildingName} {Model.UnitName}".Trim())
+                    }
+                </dd>
+            </div>
+
+            <div>
+                <dt class="text-gray-500">Delivery date</dt>
+                <dd class="font-medium text-gray-900">@Model.DateDelivered.ToString("dd MMM yyyy")</dd>
+            </div>
+
+            <div>
+                <dt class="text-gray-500">Total</dt>
+                <dd class="font-bold text-golden-700">KES @Model.Amount.ToString("N2")</dd>
+            </div>
+
+            <div class="sm:col-span-2">
+                <dt class="text-gray-500">Customer</dt>
+                <dd class="font-medium text-gray-900">@(Model.User?.UserName ?? "—")</dd>
+            </div>
+        </dl>
+
+        <!-- Admin note (visible only to admins) -->
+        @if (isAdmin && !string.IsNullOrEmpty(Model.AdminNotes))
+        {
+            <div class="mt-6 alert-info">
+                <svg class="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                    <p class="font-medium">Note from the shop</p>
+                    <p class="mt-1">@Model.AdminNotes</p>
+                </div>
+            </div>
+        }
+
+        <!-- Dispatch form (admin, Confirmed only) -->
+        @if (showDispatchForm)
+        {
+            <div class="mt-6 rounded-md border border-golden-200 bg-golden-50/50 p-5">
+                <h2 class="text-sm font-semibold text-gray-900 mb-1">Assign a delivery person</h2>
+                <p class="text-xs text-gray-600 mb-4">
+                    Enter the delivery person's phone number to mark this order as
+                    <span class="font-medium text-gray-800">Out for delivery</span>.
+                </p>
+
+                <form asp-action="Dispatch" method="post" class="space-y-4">
+                    <div asp-validation-summary="All" class="text-sm text-red-600" role="alert"></div>
+
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <div>
+                        <label for="DeliveryPersonNo" class="form-label">Delivery person phone</label>
+                        <input id="DeliveryPersonNo" name="DeliveryPersonNo"
+                               class="form-input"
+                               placeholder="e.g. +254 7XX XXX XXX"
+                               autocomplete="tel" required />
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3">
+                        <button type="submit" class="btn-primary w-auto px-6">
+                            Dispatch delivery
+                        </button>
+                        <span class="text-xs text-gray-500">
+                            The customer will be able to see the delivery is on its way.
+                        </span>
+                    </div>
+                </form>
+            </div>
+        }
+
+        <!-- Actions -->
+        <div class="mt-8 pt-6 border-t border-golden-100 flex flex-wrap items-center gap-3">
+            @if (isAdmin)
+            {
+                <a asp-action="Index" class="btn-secondary">Back to list</a>
+            }
+            else
+            {
+                <a asp-action="MyDeliveries" class="btn-secondary">Back to list</a>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

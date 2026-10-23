@@ -82,6 +82,22 @@
                                 </li>
                                 
                             }
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <li>
+                                    <a class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-golden-600 hover:bg-golden-50 transition-colors"
+                                       asp-area="" asp-controller="Payments" asp-action="Index">Payments</a>
+                                </li>
+                                
+                            }
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li>
+                                <a class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-golden-600 hover:bg-golden-50 transition-colors"
+                                   asp-area="" asp-controller="Reviews" asp-action="Index">Reviews</a>
+                            </li>
+
+                        }
                             
                         
                         </ul>

@@ -1,0 +1,114 @@
+@model IEnumerable<Shop_Management_System.Models.Payment>
+@using Shop_Management_System.Models
+@using Shop_Management_System.Extensions
+@{
+    ViewData["Title"] = "Payments";
+    var isAdmin = User.IsInRole("Admin");
+}
+
+<div class="max-w-7xl mx-auto">
+
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Payments</h1>
+            <p class="mt-1 text-sm text-gray-600">Review and manage payment records.</p>
+        </div>
+        <a asp-action="Create" class="btn-primary w-auto px-5 w-fit">
+            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            New Payment
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="card p-12 text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-golden-50">
+                <svg class="h-6 w-6 text-golden-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+            </div>
+            <h3 class="mt-4 text-base font-semibold text-gray-900">No payments yet</h3>
+            <p class="mt-1 text-sm text-gray-600">Payment records will appear here.</p>
+        </div>
+    }
+    else
+    {
+        <div class="card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-golden-100">
+                    <thead class="bg-golden-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Reference</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Item</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-golden-800">Amount</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-golden-800">Qty</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Customer</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Method</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Service</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Date</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-golden-800">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-golden-100 bg-white">
+                        @foreach (var item in Model)
+                        {
+                            <tr class="hover:bg-golden-50/50 transition-colors">
+                                <td class="px-4 py-3 text-sm font-mono text-gray-700 whitespace-nowrap">
+                                    #@item.id.ToString("D6")
+                                </td>
+                                <td class="px-4 py-3 text-sm font-medium text-gray-900">
+                                    <span class="block truncate max-w-[14rem]" title="@item.ItemName">
+                                        @(string.IsNullOrWhiteSpace(item.ItemName) ? "—" : item.ItemName)
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-right whitespace-nowrap">
+                                    KES @item.Amount
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-right whitespace-nowrap">
+                                    @item.Quantity
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    @(item.User?.UserName ?? item.User?.Email ?? "—")
+                                </td>
+                                <td class="px-4 py-3 text-sm">
+                                    @if (item.PaymentMethod != null)
+                                    {
+                                        <span class="inline-flex items-center rounded-full bg-golden-50 px-2.5 py-0.5 text-xs font-medium text-golden-700 border border-golden-200 whitespace-nowrap">
+                                            @item.PaymentMethod.GetDisplayName()
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-gray-400">—</span>
+                                    }
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    @item.Service.GetDisplayName()
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                                    @item.PaymentDate.ToString("dd MMM yyyy, HH:mm")
+                                </td>
+                                <td class="px-4 py-3 text-right whitespace-nowrap">
+                                    <div class="inline-flex items-center gap-2">
+                                        <a asp-action="Details" asp-route-id="@item.id"
+                                           class="btn-secondary-sm">Details</a>
+                                        @if (isAdmin)
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@item.id"
+                                               class="btn-secondary-sm">Edit</a>
+                                        }
+                                        <a asp-action="Delete" asp-route-id="@item.id"
+                                           class="btn-danger-sm">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

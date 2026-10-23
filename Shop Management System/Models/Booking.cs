@@ -30,26 +30,33 @@ namespace Shop_Management_System.Models
         [Display(Name = "Date Ordered"), Required]
         public DateTime DateOrdered { get; set; }
         [Display(Name = "Status")]
-        public BookingStatus Status { get; set; } = BookingStatus.Pending;
+        public BookingStatus Status { get; set; } = BookingStatus.PendingPayment;
 
         [StringLength(500)]
         [Display(Name = "Admin Notes")]
         public string? AdminNotes { get; set; }
+        
         // get item_name, Item_description, user_name, user_number with foreign key data retreval 
     }
-
+   
     public enum BookingStatus
     {
-        [Display(Name = "Pending")]
-        Pending = 0,
+        [Display(Name = "Pending Payment")]
+        PendingPayment = 0,
+
+        [Display(Name = "Pending Confirmation")]
+        PendingConfirmation = 1,
 
         [Display(Name = "Confirmed")]
-        Confirmed = 1,
+        Confirmed = 2,
 
         [Display(Name = "Completed")]
-        Completed = 2,
+        Completed = 3,
+        [Display(Name = "Reviewed")]
+        Reviewed = 4,
 
         [Display(Name = "Cancelled")]
-        Cancelled = 3
+        Cancelled = 5
+        
     }
 }

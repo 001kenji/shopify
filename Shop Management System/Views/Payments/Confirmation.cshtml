@@ -1,0 +1,351 @@
+﻿@model Shop_Management_System.Models.Delivery
+@using Shop_Management_System.Models
+@using Shop_Management_System.Extensions
+@{
+    ViewData["Title"] = "Delivery Confirmed";
+
+    var inventory = Model.Inventory;
+    var unit = string.IsNullOrWhiteSpace(inventory?.Unit) ? "pcs" : inventory!.Unit;
+    var unitPrice = inventory?.SellingPrice ?? 0;
+    var itemSubtotal = Model.Amount;                       // price of items
+    var deliveryCost = Model.DeliveryCost;                 // shipping fee
+    var grandTotal = itemSubtotal + deliveryCost;          // total to pay
+    var reference = $"#{Model.Id:D6}";
+
+    var isPending    = Model.Status == DeliveryStatus.PendingConfimation
+                    || Model.Status == DeliveryStatus.PendingPayment;
+    var needsPayment = Model.Status == DeliveryStatus.PendingPayment;
+    var isConfirmed  = Model.Status == DeliveryStatus.Confirmed
+                    || Model.Status == DeliveryStatus.OutForDelivery;
+    var isDelivered  = Model.Status == DeliveryStatus.Delivered;
+    var isCancelled  = Model.Status == DeliveryStatus.Cancelled;
+
+    var (badgeClass, badgeText) = Model.Status switch
+    {
+        DeliveryStatus.PendingPayment      => ("bg-yellow-50 border-yellow-200 text-yellow-700", "Pending payment"),
+        DeliveryStatus.PendingConfimation  => ("bg-yellow-50 border-yellow-200 text-yellow-700", "Pending confirmation"),
+        DeliveryStatus.Confirmed           => ("bg-green-50 border-green-200 text-green-700",   "Confirmed"),
+        DeliveryStatus.OutForDelivery      => ("bg-blue-50 border-blue-200 text-blue-700",      "Out for delivery"),
+        DeliveryStatus.Delivered           => ("bg-blue-50 border-blue-200 text-blue-700",      "Delivered"),
+        DeliveryStatus.Cancelled           => ("bg-red-50 border-red-200 text-red-700",         "Cancelled"),
+        _                                  => ("bg-gray-50 border-gray-200 text-gray-700",       Model.Status.ToString())
+    };
+
+    var headerTitle = Model.Status switch
+    {
+        DeliveryStatus.PendingPayment      => "Delivery received",
+        DeliveryStatus.PendingConfimation  => "Delivery received",
+        DeliveryStatus.Confirmed           => "Delivery confirmed",
+        DeliveryStatus.OutForDelivery      => "Out for delivery",
+        DeliveryStatus.Delivered           => "Delivery completed",
+        DeliveryStatus.Cancelled           => "Delivery cancelled",
+        _                                  => "Delivery received"
+    };
+
+    var headerText = Model.Status switch
+    {
+        DeliveryStatus.PendingPayment      => "Complete payment to finalise your delivery.",
+        DeliveryStatus.PendingConfimation  => "We'll confirm your delivery shortly. You'll receive an update once it's approved.",
+        DeliveryStatus.Confirmed           => "Your item is on its way. Please be available at the delivery address.",
+        DeliveryStatus.OutForDelivery      => "The courier is on the way. Please be available at the delivery address.",
+        DeliveryStatus.Delivered           => "This delivery has been completed. Thank you!",
+        DeliveryStatus.Cancelled           => "This delivery was cancelled. You can browse the shop for other items.",
+        _                                  => "We'll confirm your delivery shortly."
+    };
+
+    var bannerBg = Model.Status switch
+    {
+        DeliveryStatus.PendingPayment      => "bg-yellow-50 border-yellow-200",
+        DeliveryStatus.PendingConfimation  => "bg-yellow-50 border-yellow-200",
+        DeliveryStatus.Confirmed           => "bg-green-50 border-green-200",
+        DeliveryStatus.OutForDelivery      => "bg-blue-50 border-blue-200",
+        DeliveryStatus.Delivered           => "bg-blue-50 border-blue-200",
+        DeliveryStatus.Cancelled           => "bg-red-50 border-red-200",
+        _                                  => "bg-gray-50 border-gray-200"
+    };
+
+    var bannerIcon = Model.Status switch
+    {
+        DeliveryStatus.PendingPayment      => "text-yellow-600",
+        DeliveryStatus.PendingConfimation  => "text-yellow-600",
+        DeliveryStatus.Confirmed           => "text-green-600",
+        DeliveryStatus.OutForDelivery      => "text-blue-600",
+        DeliveryStatus.Delivered           => "text-blue-600",
+        DeliveryStatus.Cancelled           => "text-red-600",
+        _                                  => "text-gray-600"
+    };
+
+    var bannerPath = Model.Status switch
+    {
+        DeliveryStatus.PendingPayment      => "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+        DeliveryStatus.PendingConfimation  => "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+        DeliveryStatus.Confirmed           => "M5 13l4 4L19 7",
+        DeliveryStatus.OutForDelivery      => "M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0",
+        DeliveryStatus.Delivered           => "M5 13l4 4L19 7",
+        DeliveryStatus.Cancelled           => "M6 18 18 6M6 6l12 12",
+        _                                  => "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+    };
+
+    // Compose the full delivery address from parts
+    var addressParts = new[] { Model.Location, Model.BuildingName, Model.UnitName }
+        .Where(p => !string.IsNullOrWhiteSpace(p));
+    var fullAddress = string.Join(", ", addressParts);
+}
+
+<div class="max-w-2xl mx-auto">
+
+    <!-- Success / pending banner -->
+    <div class="mb-8 text-center">
+        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full border @bannerBg">
+            <svg class="h-8 w-8 @bannerIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="@bannerPath" />
+            </svg>
+        </div>
+        <h1 class="mt-4 text-2xl font-bold text-gray-900">@headerTitle</h1>
+        <p class="mt-1 text-sm text-gray-600">@headerText</p>
+    </div>
+
+    <!-- Delivery card -->
+    <div class="card p-6 sm:p-8">
+
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-semibold text-gray-900">Delivery details</h2>
+            <span class="inline-block rounded-full border @badgeClass
+                         px-3 py-0.5 text-xs font-medium whitespace-nowrap">
+                @badgeText
+            </span>
+        </div>
+
+        <!-- Item -->
+        <div class="flex gap-4 pb-6 border-b border-golden-100">
+            @if (!string.IsNullOrEmpty(inventory?.ImagePath))
+            {
+                <img src="@inventory.ImagePath" alt="@inventory.Name"
+                     class="h-20 w-20 shrink-0 rounded-md object-cover border border-golden-100" />
+            }
+            else
+            {
+                <div class="h-20 w-20 shrink-0 rounded-md bg-golden-50 border border-golden-100
+                            flex items-center justify-center text-golden-300">
+                    <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0
+                                 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2
+                                 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+            }
+
+            <div class="flex-1 min-w-0">
+                <p class="font-semibold text-gray-900 truncate">
+                    @(inventory?.Name ?? $"Item #{Model.InventoryID}")
+                </p>
+
+                @if (inventory?.Categories != null)
+                {
+                    <p class="text-xs text-gray-500 mt-0.5">
+                        @inventory.Categories.Value.GetDisplayName()
+                    </p>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(inventory?.Description))
+                {
+                    <p class="mt-2 text-sm text-gray-600 line-clamp-2">
+                        @inventory.Description
+                    </p>
+                }
+            </div>
+
+            <div class="text-right shrink-0">
+                <p class="text-xs text-gray-500">Total</p>
+                <p class="text-lg font-bold text-golden-700 whitespace-nowrap">
+                    KES @grandTotal.ToString("N2")
+                </p>
+                @if (Model.Quantity > 1 && unitPrice > 0)
+                {
+                    <p class="text-xs text-gray-400 mt-0.5 whitespace-nowrap">
+                        @Model.Quantity × KES @unitPrice.ToString("N2")
+                    </p>
+                }
+            </div>
+        </div>
+
+        <!-- Price breakdown -->
+        <dl class="mt-6 space-y-2 text-sm">
+            <div class="flex justify-between">
+                <dt class="text-gray-500">Items subtotal</dt>
+                <dd class="font-medium text-gray-900">KES @itemSubtotal.ToString("N2")</dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="text-gray-500">Delivery cost</dt>
+                <dd class="font-medium text-gray-900">
+                    @(deliveryCost > 0 ? $"KES {deliveryCost:N2}" : "Free")
+                </dd>
+            </div>
+            <div class="flex justify-between border-t border-golden-100 pt-2">
+                <dt class="font-semibold text-gray-900">Total to pay</dt>
+                <dd class="font-bold text-golden-700">KES @grandTotal.ToString("N2")</dd>
+            </div>
+        </dl>
+
+        <!-- Key facts -->
+        <dl class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+            <div>
+                <dt class="text-gray-500">Delivery reference</dt>
+                <dd class="font-mono font-medium text-gray-900">@reference</dd>
+            </div>
+
+            <div>
+                <dt class="text-gray-500">Date requested</dt>
+                <dd class="font-medium text-gray-900">
+                    @Model.DateRequested.ToLocalTime().ToString("dd MMM yyyy, HH:mm")
+                </dd>
+            </div>
+
+            <div>
+                <dt class="text-gray-500">Quantity</dt>
+                <dd class="font-medium text-gray-900">@Model.Quantity @unit</dd>
+            </div>
+
+            <div>
+                <dt class="text-gray-500">Expected delivery</dt>
+                <dd class="font-medium text-golden-700">
+                    @Model.DateDelivered.ToLocalTime().ToString("dd MMM yyyy, HH:mm")
+                </dd>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(fullAddress))
+            {
+                <div class="sm:col-span-2">
+                    <dt class="text-gray-500">Delivery address</dt>
+                    <dd class="font-medium text-gray-900">@fullAddress</dd>
+                </div>
+            }
+        </dl>
+
+        @if (!string.IsNullOrWhiteSpace(Model.AdminNotes))
+        {
+            <div class="mt-6 rounded-md bg-gray-50 border border-gray-200 p-3 text-sm">
+                <p class="font-medium text-gray-700">Note from shop</p>
+                <p class="mt-1 text-gray-600">@Model.AdminNotes</p>
+            </div>
+        }
+
+        <!-- Info note -->
+        @if (needsPayment)
+        {
+            <div class="mt-6 alert-warning">
+                <svg class="h-5 w-5 shrink-0 text-golden-600 mt-0.5" fill="none"
+                     stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+                <div>
+                    <p class="font-medium">Payment required</p>
+                    <p class="mt-1">
+                        Complete payment for reference
+                        <span class="font-mono font-semibold">@reference</span>
+                        to finalise your delivery.
+                    </p>
+                </div>
+            </div>
+        }
+        else if (Model.Status == DeliveryStatus.PendingConfimation)
+        {
+            <div class="mt-6 alert-warning">
+                <svg class="h-5 w-5 shrink-0 text-golden-600 mt-0.5" fill="none"
+                     stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                    <p class="font-medium">Awaiting confirmation</p>
+                    <p class="mt-1">
+                        Keep reference <span class="font-mono font-semibold">@reference</span> handy.
+                        We'll notify you as soon as your delivery is approved.
+                    </p>
+                </div>
+            </div>
+        }
+        else if (isConfirmed)
+        {
+            <div class="mt-6 alert-info">
+                <svg class="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none"
+                     stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                    <p class="font-medium">Please be available</p>
+                    <p class="mt-1">
+                        Our courier will arrive at the time shown above. Keep reference
+                        <span class="font-mono font-semibold">@reference</span> ready.
+                    </p>
+                </div>
+            </div>
+        }
+        else if (isDelivered)
+        {
+            <div class="mt-6 alert-info">
+                <svg class="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none"
+                     stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 12l2 2 4-4M12 21a9 9 0 110-18 9 9 0 010 18z" />
+                </svg>
+                <div>
+                    <p class="font-medium">Thanks for shopping with us</p>
+                    <p class="mt-1">
+                        This delivery has been completed. We hope to see you again soon.
+                    </p>
+                </div>
+            </div>
+        }
+        else if (isCancelled)
+        {
+            <div class="mt-6 alert-danger">
+                <svg class="h-5 w-5 shrink-0 mt-0.5" fill="none"
+                     stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 9v3m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+                </svg>
+                <div>
+                    <p class="font-medium">This delivery was cancelled</p>
+                    <p class="mt-1">
+                        You can browse the shop to find other items, or contact the shop
+                        if you believe this was a mistake.
+                    </p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-6 flex flex-wrap items-center gap-3">
+
+        @if (needsPayment)
+        {
+            <a asp-controller="Payments"
+               asp-action="Create"
+               asp-route-Id="@Model.Id"
+               asp-route-serviceScope="@ServiceType.DELIVER"
+               class="btn-primary w-auto px-6">
+                Pay KES @grandTotal.ToString("N2")
+            </a>
+        }
+
+        <a asp-controller="Deliveries" asp-action="MyDeliveries" class="btn-secondary">
+            My deliveries
+        </a>
+
+        @if (isConfirmed || isDelivered)
+        {
+            <a asp-action="Confirmation"
+               asp-route-id="@Model.Id"
+               target="_blank"
+               class="sm:ml-auto text-sm link-golden">
+                Print receipt
+            </a>
+        }
+    </div>
+
+</div>

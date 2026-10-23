@@ -126,7 +126,12 @@ public class DeliveriesController : Controller
         if (delivery.DateDelivered < DateTime.Today)
             ModelState.AddModelError(nameof(delivery.DateDelivered),
                 "Delivery date cannot be in the past.");
-
+        
+        var userref = await _context.Users.FindAsync(userId);
+        if (string.IsNullOrWhiteSpace(userref.PhoneNumber))
+        {
+            ModelState.AddModelError("", "Set your phone number in profile to proceed.");
+        }
         // Server-controlled fields — remove from validation
         ModelState.Remove("User");
         ModelState.Remove("UserId");
@@ -135,18 +140,18 @@ public class DeliveriesController : Controller
         ModelState.Remove("Status");
         ModelState.Remove("DateRequested");
         ModelState.Remove("AdminNotes");
-
+        ModelState.Remove("DeliveryPersonNo");
         if (ModelState.IsValid)
         {
             try
             {
                 delivery.UserId = userId;
                 delivery.Amount = inventory.SellingPrice * delivery.Quantity;
-                delivery.Status = DeliveryStatus.Pending;
+                delivery.Status = DeliveryStatus.PendingPayment;
                 delivery.DateRequested = DateTime.UtcNow;
-
+                delivery.DeliveryPersonNo = "";
                 _context.Add(delivery);
-                inventory.Quantity -= delivery.Quantity;
+               
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Confirmation), new { id = delivery.Id });
@@ -175,13 +180,14 @@ public class DeliveriesController : Controller
         var isAdmin = User.IsInRole("Admin");
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
+       
         var delivery = await _context.Delivery
-            .Include(d => d.Inventory)
+            .Include(d => d.Inventory)            
             .FirstOrDefaultAsync(d => d.Id == id && (isAdmin || d.UserId == userId));
-
+        
         if (delivery == null) return NotFound();
 
-        if (!isAdmin && delivery.Status != DeliveryStatus.Pending)
+        if (!isAdmin && delivery.Status != DeliveryStatus.PendingPayment)
             return BadRequest("Only pending deliveries can be edited.");
 
         ViewData["InventoryName"] = delivery.Inventory?.Name;
@@ -211,15 +217,15 @@ public class DeliveriesController : Controller
 
         if (existing == null) return NotFound();
 
-        if (!isAdmin && existing.Status != DeliveryStatus.Pending)
+        if (!isAdmin && existing.Status != DeliveryStatus.PendingPayment)
             return BadRequest("Only pending deliveries can be edited.");
 
         var inventory = await _context.Inventory.FindAsync(delivery.InventoryID);
         if (inventory == null) return NotFound();
 
-        if (delivery.Quantity > inventory.Quantity + existing.Quantity)
+        if (delivery.Quantity > inventory.Quantity )
             ModelState.AddModelError(nameof(delivery.Quantity),
-                $"Only {inventory.Quantity + existing.Quantity} {inventory.Unit} available.");
+                $"Only {inventory.Quantity } {inventory.Unit} available.");
 
         ModelState.Remove("User");
         ModelState.Remove("UserId");
@@ -228,14 +234,12 @@ public class DeliveriesController : Controller
         ModelState.Remove("Status");
         ModelState.Remove("DateRequested");
         ModelState.Remove("AdminNotes");
-
+        ModelState.Remove("DeliveryPersonNo");
         if (ModelState.IsValid)
         {
             try
             {
-                // Restore old stock, decrement new stock
-                if (existing.Inventory != null)
-                    existing.Inventory.Quantity += existing.Quantity;
+                
 
                 existing.Quantity = delivery.Quantity;
                 existing.Location = delivery.Location;
@@ -244,8 +248,8 @@ public class DeliveriesController : Controller
                 existing.DeliveryCost = delivery.DeliveryCost;
                 existing.DateDelivered = delivery.DateDelivered;
                 existing.Amount = inventory.SellingPrice * delivery.Quantity;
-
-                inventory.Quantity -= delivery.Quantity;
+                
+                
 
                 await _context.SaveChangesAsync();
             }
@@ -306,10 +310,9 @@ public class DeliveriesController : Controller
 
         if (delivery != null)
         {
-            // Restore stock if the delivery wasn't already completed/cancelled
+            // Restore stock if the delivery was already paid for
             if (delivery.Inventory != null &&
-                delivery.Status != DeliveryStatus.Delivered &&
-                delivery.Status != DeliveryStatus.Cancelled)
+                delivery.Status != DeliveryStatus.PendingPayment)
             {
                 delivery.Inventory.Quantity += delivery.Quantity;
             }
@@ -331,8 +334,8 @@ public class DeliveriesController : Controller
         var delivery = await _context.Delivery.FindAsync(id);
         if (delivery == null) return NotFound();
 
-        if (delivery.Status != DeliveryStatus.Pending)
-            return BadRequest("Only pending deliveries can be confirmed.");
+        if (delivery.Status != DeliveryStatus.PendingConfimation)
+            return BadRequest("Only paid pending deliveries can be confirmed.");
 
         delivery.Status = DeliveryStatus.Confirmed;
         await _context.SaveChangesAsync();
@@ -341,11 +344,11 @@ public class DeliveriesController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // POST: /Deliveries/Dispatch/5
-    [HttpPost, ActionName("Dispatch")]
-    [ValidateAntiForgeryToken]
+
+    // GET: /Deliveries/Dispatch/5
+    [HttpGet]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> DispatchConfirmed(int id)
+    public async Task<IActionResult> Dispatch(int id)
     {
         var delivery = await _context.Delivery.FindAsync(id);
         if (delivery == null) return NotFound();
@@ -353,6 +356,28 @@ public class DeliveriesController : Controller
         if (delivery.Status != DeliveryStatus.Confirmed)
             return BadRequest("Only confirmed deliveries can be dispatched.");
 
+        
+        return View("Dispatch",delivery);
+    }
+
+    // POST: /Deliveries/Dispatch/5
+    [HttpPost, ActionName("Dispatch")]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DispatchConfirmed(int id, string? DeliveryPersonNo)
+    {
+        var delivery = await _context.Delivery.FindAsync(id);
+        if (delivery == null) return NotFound("This spesific item is not found in delivery. Try again.");
+
+        if (delivery.Status != DeliveryStatus.Confirmed)
+            return BadRequest("Only confirmed deliveries can be dispatched.");
+        if (string.IsNullOrWhiteSpace(DeliveryPersonNo))
+        {
+            ModelState.AddModelError(nameof(DeliveryPersonNo),
+               "Delivery person phone number is required..");
+            return View("Dispatch",delivery);
+        }
+        delivery.DeliveryPersonNo = DeliveryPersonNo;
         delivery.Status = DeliveryStatus.OutForDelivery;
         await _context.SaveChangesAsync();
 
@@ -393,14 +418,16 @@ public class DeliveriesController : Controller
 
         if (delivery == null) return NotFound();
 
-        if (delivery.Status != DeliveryStatus.Pending && delivery.Status != DeliveryStatus.Confirmed)
+        if (delivery.Status != DeliveryStatus.PendingPayment && delivery.Status != DeliveryStatus.PendingConfimation && delivery.Status != DeliveryStatus.Confirmed)
             return BadRequest("This delivery can no longer be cancelled.");
 
-        delivery.Status = DeliveryStatus.Cancelled;
+        
 
-        if (delivery.Inventory != null)
+        if (delivery.Inventory != null && delivery.Status != DeliveryStatus.PendingPayment)
             delivery.Inventory.Quantity += delivery.Quantity;
 
+
+        delivery.Status = DeliveryStatus.Cancelled;
         await _context.SaveChangesAsync();
 
         TempData["StatusMessage"] = $"Delivery #{delivery.Id:D6} cancelled.";

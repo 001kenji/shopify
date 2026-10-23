@@ -1,0 +1,71 @@
+@model Shop_Management_System.Models.Payment
+@using Shop_Management_System.Models
+@using Shop_Management_System.Extensions
+@{
+    ViewData["Title"] = "Edit Payment";
+}
+
+<div class="max-w-2xl mx-auto py-12">
+
+    <!-- Header -->
+    <div class="mb-8">
+        <nav class="text-sm text-gray-500 mb-2">
+            <a asp-action="Index" class="hover:text-golden-600 transition-colors">Payments</a>
+            <span class="mx-1">/</span>
+            <span class="text-gray-700">Edit</span>
+        </nav>
+        <h1 class="text-2xl font-bold text-gray-900">Edit Payment</h1>
+        <p class="mt-1 text-sm text-gray-600">Update this payment record.</p>
+    </div>
+
+    <div class="card p-6 sm:p-8">
+        <form asp-action="Edit" class="space-y-5">
+            <div asp-validation-summary="ModelOnly" class="text-sm text-red-600" role="alert"></div>
+            <input type="hidden" asp-for="id" />
+
+            <div class="grid sm:grid-cols-2 gap-5">
+
+                <div class="sm:col-span-2">
+                    <label asp-for="ItemName" class="form-label">Item Name</label>
+                    <input asp-for="ItemName" class="form-input" />
+                    <span asp-validation-for="ItemName" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Quantity" class="form-label">Quantity</label>
+                    <input asp-for="Quantity" class="form-input" />
+                    <span asp-validation-for="Quantity" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div>
+                    <label asp-for="PaymentMethod" class="form-label">Payment Method</label>
+                    <select asp-for="PaymentMethod" class="form-input">
+                        <option value="">-- Select a payment method --</option>
+                        @foreach (var c in Enum.GetValues<MethodTypes>())
+                        {
+                            var selected = Model.PaymentMethod == c;
+                            <option value="@c" selected="@selected">@c.GetDisplayName()</option>
+                        }
+                    </select>
+                    <span asp-validation-for="PaymentMethod" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label asp-for="PaymentDate" class="form-label">Payment Date</label>
+                    <input asp-for="PaymentDate" type="datetime-local" class="form-input"
+                           value="@Model.PaymentDate.ToString("yyyy-MM-ddTHH:mm")" />
+                    <span asp-validation-for="PaymentDate" class="mt-1 block text-xs text-red-600"></span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2 border-t border-golden-100">
+                <button type="submit" class="btn-primary w-auto px-6">Save changes</button>
+                <a asp-action="Index" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -25,22 +25,33 @@ namespace Shop_Management_System.Models
         [Required, Display(Name = "Posted On")]
         public DateTime PostedOn { get; set; } = DateTime.Now;
 
-        
+        public ServiceReviewed? Service { get; set; }
         public ICollection<Likes>? likes { get; set;  } = new List<Likes>();
+    }
+    public enum ServiceReviewed
+    {
+        [Display(Name = "Book service")]
+        BOOK,
+        [Display(Name = "Delivery service")]
+        DELIVER
     }
     public enum RatingsGrade
     {
-        [Display(Name ="1 Star")]
-        OneStar,
+        [Display(Name = "1 Star")]
+        OneStar = 1,   // Explicitly sets it to 1
+
         [Display(Name = "2 Star")]
-        TwoStar,
+        TwoStar = 2,
+
         [Display(Name = "3 Star")]
-        ThreeStar,
+        ThreeStar = 3,
+
         [Display(Name = "4 Star")]
-        FourStar,
+        FourStar = 4,
+
         [Display(Name = "5 Star")]
-        FiveStar
+        FiveStar = 5
     }
-  
+
 
 }

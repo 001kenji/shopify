@@ -18,6 +18,12 @@
     <div class="card overflow-hidden">
         <dl class="divide-y divide-golden-100">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
+                <dt class="text-sm font-medium text-gray-500">Item Ref</dt>
+                <dd class="sm:col-span-2 text-sm font-medium text-gray-900">
+                    #@(Model.Id.ToString("D6"))
+                </dd>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
                 <dt class="text-sm font-medium text-gray-500">Item</dt>
                 <dd class="sm:col-span-2 text-sm font-medium text-gray-900">
                     @(Model.Inventory?.Name ?? $"Item #{Model.InventoryID}")
@@ -28,6 +34,13 @@
                 <dt class="text-sm font-medium text-gray-500">User</dt>
                 <dd class="sm:col-span-2 text-sm text-gray-900">
                     @(Model.User?.UserName ?? Model.UserId)
+                </dd>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 px-6 py-4">
+                <dt class="text-sm font-medium text-gray-500">User Number</dt>
+                <dd class="sm:col-span-2 text-sm text-gray-900">
+                    @(Model.User?.PhoneNumber ?? "-")
                 </dd>
             </div>
 

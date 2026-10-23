@@ -1,0 +1,101 @@
+@model Shop_Management_System.Models.Review
+@using Shop_Management_System.Models
+@using Shop_Management_System.Extensions
+@{
+    ViewData["Title"] = "Write a Review";
+
+    var inventoryName = ViewData["Name"]?.ToString();
+    var inventoryDescription = ViewData["Description"]?.ToString();
+}
+
+<div class="max-w-2xl mx-auto py-12">
+
+    <!-- Header -->
+    <div class="mb-8">
+        <nav class="text-sm text-gray-500 mb-2">
+            <a asp-controller="Shop" asp-action="Index" class="hover:text-golden-600 transition-colors">Shop</a>
+            <span class="mx-1">/</span>
+            <span class="text-gray-700">Review</span>
+        </nav>
+        <h1 class="text-2xl font-bold text-gray-900">Write a review</h1>
+        <p class="mt-1 text-sm text-gray-600">
+            Share your experience to help other customers.
+        </p>
+    </div>
+
+    <!-- Item summary -->
+    @if (!string.IsNullOrWhiteSpace(inventoryName) || !string.IsNullOrWhiteSpace(inventoryDescription))
+    {
+        <div class="card p-6 mb-6">
+            <h2 class="text-xs font-semibold text-gray-900 uppercase tracking-wide mb-3">
+                You're reviewing
+            </h2>
+            <div class="space-y-2 text-sm">
+                @if (!string.IsNullOrWhiteSpace(inventoryName))
+                {
+                    <p class="font-semibold text-gray-900">@inventoryName</p>
+                }
+                @if (!string.IsNullOrWhiteSpace(inventoryDescription))
+                {
+                    <p class="text-gray-600 line-clamp-2">@inventoryDescription</p>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Review form -->
+    <div class="card p-6 sm:p-8">
+        <form asp-action="Create" class="space-y-6">
+            <div asp-validation-summary="All" class="text-sm text-red-600" role="alert"></div>
+
+            <input asp-for="UserId" type="hidden" />
+            <input asp-for="InventoryID" type="hidden" />
+            <input asp-for="Service" type="hidden" />
+
+            <!-- Rating -->
+            <div>
+                <label asp-for="Ratings" class="form-label">Rating</label>
+                <div class="mt-2 flex items-center gap-1">
+                    @foreach (RatingsGrade grade in Enum.GetValues<RatingsGrade>())
+                    {
+                        var value = ((int)grade ).ToString();
+                        var label = grade.GetDisplayName();
+                        var isChecked = Model.Ratings == grade;
+
+                        <label class="cursor-pointer group" title="@label">
+                            <input type="radio"
+                                   asp-for="Ratings"
+                                   value="@value"
+                                   class="sr-only peer"
+                                   checked="@isChecked" />
+                            <svg class="h-8 w-8 text-gray-200 peer-checked:text-golden-400
+                                        group-hover:text-golden-300 transition-colors"
+                                 fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 0 0 .95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 0 0-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 0 0-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 0 0-.363-1.118L2.027 10.1c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 0 0 .951-.69l1.519-4.673Z" />
+                            </svg>
+                        </label>
+                    }
+                </div>
+                <span asp-validation-for="Ratings" class="mt-2 block text-xs text-red-600"></span>
+            </div>
+
+            <!-- Details -->
+            <div>
+                <label asp-for="Details" class="form-label">Your review</label>
+                <textarea asp-for="Details" rows="5" class="form-input"
+                          placeholder="Tell others what you thought of this item..."></textarea>
+                <span asp-validation-for="Details" class="mt-1 block text-xs text-red-600"></span>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-3 pt-2 border-t border-golden-100">
+                <button type="submit" class="btn-primary w-auto px-6">Submit review</button>
+                <a asp-action="Index" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,160 @@
+﻿@model IEnumerable<Shop_Management_System.Models.Booking>
+@using Shop_Management_System.Models
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+@functions {
+    (string chipClass, string dotClass) BookingStatusStyle(BookingStatus status) => status switch
+    {
+        BookingStatus.PendingPayment      => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        BookingStatus.PendingConfirmation => ("bg-yellow-50 border-yellow-200 text-yellow-700", "bg-yellow-500"),
+        BookingStatus.Confirmed           => ("bg-green-50 border-green-200 text-green-700",   "bg-green-500"),
+        BookingStatus.Completed           => ("bg-blue-50 border-blue-200 text-blue-700",      "bg-blue-500"),
+        BookingStatus.Cancelled           => ("bg-red-50 border-red-200 text-red-700",         "bg-red-500"),
+        _                                 => ("bg-gray-50 border-gray-200 text-gray-700",      "bg-gray-400"),
+    };
+
+    string BookingRowAccent(BookingStatus status) => status switch
+    {
+        BookingStatus.PendingPayment      => "border-l-4 border-l-yellow-400",
+        BookingStatus.PendingConfirmation => "border-l-4 border-l-yellow-400",
+        BookingStatus.Confirmed           => "border-l-4 border-l-green-400",
+        BookingStatus.Completed           => "border-l-4 border-l-blue-400",
+        BookingStatus.Cancelled           => "border-l-4 border-l-red-400",
+        _                                 => "border-l-4 border-l-gray-300",
+    };
+}
+
+<div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">My Bookings</h1>
+            <p class="mt-1 text-sm text-gray-600">Track and manage your reservations.</p>
+        </div>
+        <a asp-controller="Shop" asp-action="Index" class="btn-primary w-auto px-6">
+            Browse shop
+        </a>
+    </div>
+
+    <!-- Status message -->
+    @if (TempData["StatusMessage"] != null)
+    {
+        <div class="alert-info mb-6">
+            <svg class="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>@TempData["StatusMessage"]</div>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <!-- Empty state -->
+        <div class="card p-12 text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-golden-50">
+                <svg class="h-6 w-6 text-golden-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+            </div>
+            <h3 class="mt-4 text-base font-semibold text-gray-900">No bookings yet</h3>
+            <p class="mt-1 text-sm text-gray-600">
+                Browse the shop to reserve an item for pickup.
+            </p>
+            <a asp-controller="Shop" asp-action="Index" class="btn-primary w-auto px-6 mt-6 inline-block">
+                Browse shop
+            </a>
+        </div>
+    }
+    else
+    {
+        <!-- Bookings table -->
+        <div class="card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-golden-100">
+                    <thead class="bg-golden-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Ref</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Item</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-golden-800">Qty</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Pickup time</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-golden-800">Total</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-golden-800">Status</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-golden-800">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-golden-100">
+                        @foreach (var b in Model)
+                        {
+                            var status = b.Status;
+                            var (chipClass, dotClass) = BookingStatusStyle(status);
+                            var itemName = b.Inventory?.Name ?? $"Item #{b.InventoryID}";
+                            var unit = string.IsNullOrWhiteSpace(b.Inventory?.Unit) ? "pcs" : b.Inventory!.Unit;
+                            var lineTotal = (b.Inventory?.SellingPrice ?? 0) * b.Quantity;
+
+                            <tr class="hover:bg-golden-50/40 transition-colors @BookingRowAccent(status)">
+                                <td class="px-4 py-3 text-sm font-mono text-gray-700 whitespace-nowrap">
+                                    #@b.Id.ToString("D6")
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    <span class="block truncate max-w-[14rem]" title="@itemName">@itemName</span>
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-right whitespace-nowrap">
+                                    @b.Quantity <span class="text-gray-400">@unit</span>
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                                    @b.PickingDuration.ToString("dd MMM yyyy, HH:mm")
+                                </td>
+                                <td class="px-4 py-3 text-sm font-medium text-golden-700 text-right whitespace-nowrap">
+                                    KES @lineTotal.ToString("N2")
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center gap-1.5 rounded-full border @chipClass
+                                                 px-2.5 py-0.5 text-xs font-medium whitespace-nowrap">
+                                        <span class="h-1.5 w-1.5 rounded-full @dotClass"></span>
+                                        @status
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-right whitespace-nowrap">
+                                    <div class="inline-flex items-center gap-3">
+                                        <a asp-action="Confirmation" asp-route-id="@b.Id"
+                                           class="text-xs font-medium text-golden-600 hover:text-golden-700 underline-offset-2 hover:underline">
+                                            View
+                                        </a>
+
+                                        @if (status == BookingStatus.PendingPayment)
+                                        {
+                                            <a asp-controller="Payments"
+                                               asp-action="Create"
+                                               asp-route-Id="@b.Id"
+                                               asp-route-serviceScope="@ServiceType.BOOK"
+                                               class="text-xs font-medium text-golden-600 hover:text-golden-700 underline-offset-2 hover:underline">
+                                                Pay
+                                            </a>
+                                        }
+
+                                        @if (status == BookingStatus.PendingPayment || status == BookingStatus.Confirmed)
+                                        {
+                                            <form asp-action="Cancel" asp-route-id="@b.Id" method="post" class="inline"
+                                                  onsubmit="return confirm('Cancel this booking?');">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit"
+                                                        class="text-xs font-medium text-red-600 hover:text-red-700 underline-offset-2 hover:underline">
+                                                    Cancel
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

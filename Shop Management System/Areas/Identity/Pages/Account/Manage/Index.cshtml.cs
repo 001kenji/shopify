@@ -105,7 +105,7 @@ public class IndexModel : PageModel
         }
 
         var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-        var userName = await _userManager.GetUserNameAsync(user);
+        //var userName = await _userManager.GetUserNameAsync(user);
         if (Input.PhoneNumber != phoneNumber)
         {
             var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
@@ -115,15 +115,15 @@ public class IndexModel : PageModel
                 return RedirectToPage();
             }
         }
-        if (Input.UserName != userName)
-        {
-            var setNameResult = await _userManager.SetUserNameAsync(user, Input.UserName);
-            if (!setNameResult.Succeeded)
-            {
-                StatusMessage = "Unexpected error when trying to set user name.";
-                return RedirectToPage();
-            }
-        }
+        //if (Input.UserName != userName)
+        //{
+        //    var setNameResult = await _userManager.SetUserNameAsync(user, Input.UserName);
+        //    if (!setNameResult.Succeeded)
+        //    {
+        //        StatusMessage = "Unexpected error when trying to set user name.";
+        //        return RedirectToPage();
+        //    }
+        //}
 
         await _signInManager.RefreshSignInAsync(user);
         StatusMessage = "Your profile has been updated";
