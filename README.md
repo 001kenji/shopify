@@ -6,4 +6,5 @@ For clients, the platform offers unparalleled convenience, saving valuable time 
 
 For shop owners, the system unlocks the ability to reach a significantly wider audience without the overhead of a traditional physical expansion. By bringing the shop directly to the customer's screen, owners can sell to more clients, manage their inventory efficiently, and build lasting relationships with their community through digital engagement.
 
-![Shop Management System](shop.png)
+
+![Shop Management System](Shop%20Management%20System/shop.png)
